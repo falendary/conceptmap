@@ -1,0 +1,79 @@
+.to-center-button {
+    bottom: 16px;
+    left: 50%;
+    margin-left: 32px;
+    height: 60px;
+    width: 60px;
+}
+
+.add-card-button {
+
+    bottom: 16px;
+    left: 50%;
+    margin-left: -96px;
+    height: 60px;
+    width: 80px;
+}
+
+.save-button {
+
+    bottom: 16px;
+    left: 50%;
+    margin-left: -230px;
+    height: 60px;
+    width: 80px;
+}
+
+.export-button {
+
+    bottom: 16px;
+    left: 50%;
+    margin-left: -330px;
+    height: 60px;
+    width: 80px;
+
+}
+
+.user-position {
+    user-select: none;
+    bottom: 8px;
+    left: 8px;
+}
+
+
+.inteface-element {
+    position: fixed;
+    z-index: 2;
+}
+
+.search-box {
+
+    top: 16px;
+    left: 16px;
+
+}
+
+.search-box input {
+    font-size: 16px;
+    height: 32px;
+    padding-left: 8px;
+    border: 1px solid #000;
+    outline: none;
+}
+.search-box input:focus {
+    outline: none;
+}
+
+.search-box-button {
+    height: 32px;
+    background: #fff;
+    margin: 0;
+    cursor: pointer;
+    float: right;
+    margin-left: 8px;
+    border: 1px solid #000;
+}
+
+.search-box-button:hover {
+    background: #ddd;
+}
