@@ -140,6 +140,7 @@ body {
     height: calc(100% - 34px);
     outline: none;
     font-size: 14px;
+    border: 0;
 }
 
 

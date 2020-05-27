@@ -131,6 +131,14 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
+    document.querySelector('.reset-zoom-button').addEventListener('click', function(event){
+
+      $(".zoom-wrap")
+        .css("transform-origin", "inital")
+        .css("transform", "scale(1)");
+
+    })
+
   }
 
   return {
