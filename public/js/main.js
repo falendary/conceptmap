@@ -216,22 +216,6 @@ function initSpace() {
 
       location.href = '/';
 
-      // var space = {
-      //   id: toMD5('space_' + new Date())
-      // }
-
-      // var spaces = [];
-
-      // spaces.push(space)
-      // activeSpaceElem = document.querySelector('.space');
-      // activeSpace = space
-
-      // dataService.setSpaces(spaces)
-      // dataService.setActiveSpace(space)
-      // dataService.setActiveSpaceElem(activeSpaceElem)
-
-      // resolve()
-
     })
 
   })
@@ -310,36 +294,77 @@ function handleHashUrl(dataService, eventService, hash) {
 
       var resultCard;
 
-      activeSpace.cards.forEach(function(card){
+      var valuePieces = value.split('/');
+      var spaceName = valuePieces[0];
+      var cardName = valuePieces[1];
 
-        if (card.title.toLocaleLowerCase() == value.toLocaleLowerCase()) {
-            resultCard = card;
-        }
+      var spaces = dataService.getSpaces();
+      var activeSpaceIndex;
+      var newActiveSpace;
 
+      spaces.forEach(function(space){
+        space.active = false;
       })
 
-      if (resultCard) {
+      spaces.forEach(function(space, index){
+        if(space.name.toLocaleLowerCase() == spaceName.toLocaleLowerCase()){
+          newActiveSpace = space;
+          activeSpaceIndex = index
+        }
+      })
 
-          var startLeft = parseInt(activeSpaceElem.style.left.split('px')[0], 10);
-          var startTop = parseInt(activeSpaceElem.style.top.split('px')[0], 10);
+      if (newActiveSpace) {
 
-          var startLeft = -constants.OFFSET_LEFT
-          var startTop = -constants.OFFSET_TOP
+        console.log('newActiveSpace', newActiveSpace);
 
-          var diffLeft = constants.OFFSET_LEFT - resultCard.position.x
-          var diffTop = constants.OFFSET_TOP - resultCard.position.y
+        activeSpace = newActiveSpace
 
-          var halfScreenWidth = document.body.clientWidth / 2;
-          var halfScreenHeight = document.body.clientHeight / 2;
+        activeSpace.active = true;
+        
+        dataService.setActiveSpace(activeSpace);
+      
 
-          var halfCardHeight = resultCard.style.height / 2;
-          var halfCardWidth  = resultCard.style.width / 2;
+        activeSpace.cards.forEach(function(card){
 
-          activeSpaceElem.style.left = startLeft + diffLeft + halfScreenWidth - halfCardWidth + 'px';
-          activeSpaceElem.style.top = startTop + diffTop + halfScreenHeight - halfCardHeight + 'px';
+          if (card.title.toLocaleLowerCase() == cardName.toLocaleLowerCase()) {
+              resultCard = card;
+          }
+
+        })
+
+        eventService.dispatchEvent(EVENTS.RENDER_SPACES);
+
+        activeSpaceElem = document.querySelector('.space-' + activeSpaceIndex)
+        dataService.setActiveSpaceElem(activeSpaceElem);
+
+        eventService.dispatchEvent(EVENTS.RENDER_SPACES_TABS);
+
+        if (resultCard) {
+
+            var startLeft = parseInt(activeSpaceElem.style.left.split('px')[0], 10);
+            var startTop = parseInt(activeSpaceElem.style.top.split('px')[0], 10);
+
+            var startLeft = -constants.OFFSET_LEFT
+            var startTop = -constants.OFFSET_TOP
+
+            var diffLeft = constants.OFFSET_LEFT - resultCard.position.x
+            var diffTop = constants.OFFSET_TOP - resultCard.position.y
+
+            var halfScreenWidth = document.body.clientWidth / 2;
+            var halfScreenHeight = document.body.clientHeight / 2;
+
+            var halfCardHeight = resultCard.style.height / 2;
+            var halfCardWidth  = resultCard.style.width / 2;
+
+            activeSpaceElem.style.left = startLeft + diffLeft + halfScreenWidth - halfCardWidth + 'px';
+            activeSpaceElem.style.top = startTop + diffTop + halfScreenHeight - halfCardHeight + 'px';
+
+        }
+
 
       }
 
+   
       console.log('resultCard', resultCard);
 
     }

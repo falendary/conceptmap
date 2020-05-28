@@ -7,6 +7,11 @@ function InterfaceModule(dataService, eventService) {
 
   function setEventListeners(){
 
+    eventService.addEventListener(EVENTS.RENDER_SPACES_TABS, function(){
+
+      renderSpacesTabs();
+
+    })
 
 
   }
@@ -41,6 +46,12 @@ function InterfaceModule(dataService, eventService) {
         dataService.setActiveSpaceElem(activeSpaceElem);
 
         renderSpacesTabs();
+
+        setTimeout(function(){
+
+          document.querySelector('.to-center-button').click();
+
+        }, 10)
 
       })
 
@@ -93,17 +104,16 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.to-center-button').addEventListener('click', function(event){
 
-      document.querySelector('.to-center-button').addEventListener('click', function(event){
-
       var halfScreenWidth = document.body.clientWidth / 2;
       var halfScreenHeight = document.body.clientHeight / 2;
+
+      console.log('halfScreenWidth', halfScreenWidth);
+      console.log('halfScreenHeight', halfScreenHeight);
 
       activeSpaceElem.style.left = -constants.OFFSET_LEFT + halfScreenWidth + 'px';
       activeSpaceElem.style.top = -constants.OFFSET_TOP + halfScreenHeight + 'px';
 
       window.location.hash = '#/'
-
-    })
 
     })
 
@@ -189,12 +199,14 @@ function InterfaceModule(dataService, eventService) {
 
       window.location.hash = '#/';
 
+      var spaceName = activeSpace.name
+
       setTimeout(function(){
 
-        window.location.hash = '#/goto=' + input.value;
+        window.location.hash = '#/goto=' + spaceName + '/' + input.value;
+        input.value = '';
 
       }, 0)
-
 
     })
 
@@ -252,6 +264,8 @@ function InterfaceModule(dataService, eventService) {
       dataService.setActiveSpaceElem(activeSpaceElem)
 
     })
+
+    console.log("Interface ready");
 
     renderSpacesTabs();
 
