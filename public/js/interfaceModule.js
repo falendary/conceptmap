@@ -11,6 +11,73 @@ function InterfaceModule(dataService, eventService) {
 
   }
 
+  function handleSpaceTabs() {
+
+    var buttons = document.querySelectorAll('.space-button');
+    var spaces = dataService.getSpaces();
+
+    for( var i = 0; i < buttons.length; i = i + 1) {
+
+      var button = buttons[i];
+
+      button.addEventListener('click', function(event){
+
+        var index = this.dataset.index
+
+        console.log("Change space index", index);
+
+        spaces.forEach(function(space){
+          space.active = false;
+        })
+
+        activeSpace = spaces[index]
+        activeSpace.active = true;
+        dataService.setActiveSpace(activeSpace);
+
+        eventService.dispatchEvent(EVENTS.RENDER_SPACES);
+
+        activeSpaceElem = document.querySelector('.space-' + index);
+
+        dataService.setActiveSpaceElem(activeSpaceElem);
+
+        renderSpacesTabs();
+
+      })
+
+    }
+
+  }
+
+  function renderSpacesTabs(){
+
+    var spacesContainerElem = document.querySelector('.spaces-container');
+
+    var spaces = dataService.getSpaces();
+
+    console.log("renderSpaces spaces", spaces);
+
+    var resultHtml = ''
+
+    spaces.forEach(function(space, index) {
+
+      var isActive = space.active ? 'active' : '';
+
+      var spaceHtml = '<div data-index="' + index + '" class="space-button ' + isActive + ' ">';
+
+      spaceHtml = spaceHtml + space.name;
+
+      spaceHtml = spaceHtml + "</div>";
+
+      resultHtml = resultHtml + spaceHtml;
+
+    })
+
+    spacesContainerElem.innerHTML = resultHtml;
+
+    handleSpaceTabs()
+
+  }
+
   function init(){
 
     setEventListeners();
@@ -78,9 +145,9 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.save-button').addEventListener('click', function(event) {
 
-        var data = {
-          spaces: dataService.getSpaces()
-        }
+        var body = dataService.getProject();
+
+        body.spaces = dataService.getSpaces()
 
         fetch('/api/save', {
           method: 'POST',
@@ -88,7 +155,7 @@ function InterfaceModule(dataService, eventService) {
             'Content-type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(body)
         }).then(function(data){
             toastr.info('Сохранено')
         })
@@ -97,9 +164,9 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.export-button').addEventListener('click', function(event) {
 
-      var body = {
-          spaces: dataService.getSpaces()
-      }
+      var body = dataService.getProject();
+
+      body.spaces = dataService.getSpaces()
 
       var date = new Date().toISOString().split('T')[0]
 
@@ -138,6 +205,55 @@ function InterfaceModule(dataService, eventService) {
         .css("transform", "scale(1)");
 
     })
+
+    document.querySelector('.to-main-menu').addEventListener('click', function(event){
+
+      localStorage.removeItem('activeProject');
+
+      location.href = '/';
+
+
+    })
+
+    document.querySelector('.add-space-button').addEventListener('click', function(event){
+
+      var spaceName = document.querySelector('.space-name-input').value;
+
+      var spaces = dataService.getSpaces();
+
+      spaces.forEach(function(space){
+        space.active = false;
+      })
+
+      var space = {
+        name: spaceName,
+        active: true,
+        id: toMD5('space_' + new Date()),
+        cards: []
+      }
+
+      spaces.push(space)
+
+      console.log('spaces', spaces);
+
+      dataService.setSpaces(spaces);
+      dataService.setActiveSpace(space);
+
+      activeSpace = space;
+
+      document.querySelector('.space-name-input').value = '';
+
+      renderSpacesTabs();
+
+      eventService.dispatchEvent(EVENTS.RENDER_SPACES);
+
+      activeSpaceElem = document.querySelector('.space.active');
+
+      dataService.setActiveSpaceElem(activeSpaceElem)
+
+    })
+
+    renderSpacesTabs();
 
   }
 

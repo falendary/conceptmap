@@ -1,6 +1,7 @@
 function DataService() {
 
   state = {
+    project: null,
     spaces: [],
     activeSpace: null
   }
@@ -12,6 +13,14 @@ function DataService() {
       OFFSET_TOP: 25000
     }
 
+  }
+
+  function setProject(project) {
+    state.project = project;
+  }
+
+  function getProject(){
+    return state.project;
   }
 
   function setActiveSpace(space){
@@ -91,6 +100,9 @@ function DataService() {
   return {
 
     getConstants: getConstants,
+
+    setProject: setProject,
+    getProject: getProject,
 
     setSpaces: setSpaces,
     getSpaces: getSpaces,

@@ -38,6 +38,11 @@
 .p-8 {
     padding: 8px;
 }
+
+.m-t-24 {
+    margin-top: 24px;
+}
+
 .text-uppercase {
     text-transform: uppercase;
 }

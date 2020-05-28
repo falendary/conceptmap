@@ -1,3 +1,11 @@
+.to-main-menu {
+     bottom: 16px;
+    left: 50%;
+    margin-left: 250px;
+    height: 60px;
+    width: 100px;
+}
+
 .to-center-button {
     bottom: 16px;
     left: 50%;
@@ -42,6 +50,16 @@
 
 }
 
+.add-space-button {
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    width: 130px;
+}
+.add-space-button:hover {
+    background: #ddd;
+}
+
 .user-position {
     user-select: none;
     bottom: 8px;
@@ -59,6 +77,50 @@
     top: 16px;
     left: 16px;
 
+}
+
+.spaces-box {
+    top: 16px;
+    right: 16px;
+    overflow: hidden;
+}
+
+.space-name-input {
+    display: block;
+    border: 1px solid #000;
+    height: 20px;
+    width: 130px;
+}
+
+.spaces-container {
+    float: left;
+}
+
+.spaces-controls {
+    float: right;
+}
+
+.space-button {
+    background: #fff;
+    border: 1px solid #000;
+    height: 42px;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    float: left;
+}
+
+.space-button.active {
+    background: lightgreen;
+    cursor: default;
+}
+
+.space-button:hover {
+    background: #ddd;
+}
+
+.space-button.active:hover {
+    background: lightgreen;
 }
 
 .search-box input {

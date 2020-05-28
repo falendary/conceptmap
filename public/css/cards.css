@@ -1,0 +1,96 @@
+.card {
+    position: absolute;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+}
+
+.card-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 16px;
+}
+
+.draggable-corner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    background: #ddd;
+    cursor: move;
+
+    display: none;
+}
+
+.delete-corner {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    background: red;
+    cursor: pointer;
+
+    display: none;
+}
+
+.resize-corner {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    background: lightblue;
+    cursor: nwse-resize;
+
+    display: none;
+}
+
+.delete-corner:hover {
+    opacity: .6
+}
+
+
+.card:hover .draggable-corner {
+    display: block;
+}
+
+.card:hover .delete-corner {
+    display: block;
+}
+
+.card:hover .resize-corner {
+    display: block;
+}
+
+
+.card .card-title {
+
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+
+    font-weight: bold;
+
+}
+
+.card .card-title:focus {
+    border-bottom: 1px solid #000;
+}
+
+.card .card-text {
+    display: block;
+    margin-top: 8px;
+    resize: none;
+    width: 100%;
+    padding-bottom: 20px;
+    height: calc(100% - 34px);
+    outline: none;
+    font-size: 14px;
+    border: 0;
+}

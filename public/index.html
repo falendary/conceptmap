@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/lib/toastr.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/cards.css">
     <link rel="stylesheet" type="text/css" href="css/interface.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 
@@ -17,44 +18,35 @@
 
 <body>
 
-<div class="inteface-element user-position"></div>
+<div class="main-menu-container">
+    <h1 class="text-center">Concept Map</h1>
+    <h2 class="text-center">Список проектов</h2>
 
-<div class="inteface-element search-box">
-	
-	<input class="search-box-input" type="text" placeholder="Имя карточки">
-	<button class="search-box-button">Искать</button>
+    <div class="projects-container">
+        
+    </div>
 
-</div>
+    <div class="text-center m-t-24">
 
-<button class="inteface-element export-button">Экспорт</button>
-<button class="inteface-element save-button">Сохранить</button>
-<button class="inteface-element add-card-button">Добавить карточку</button>
-<button class="inteface-element to-center-button">В центр</button>
-<button class="inteface-element reset-zoom-button">Сбросить Увеличение</button>
+        <div>
 
+            <input class="project-name-input" type="text" placeholder="Имя проекта">
 
-<div class="zoom-wrap">
-    <div class="space" style="left: -25000px; top: -25000px;">
-         
-        <div class="space-content"></div>
+            <button class="add-project-button">Создать проект</button>
 
-        <div class="axis-y"></div>
-        <div class="axis-x"></div>
+        </div>
 
     </div>
+
 </div>
+
 <script src="js/lib/crypto.js"></script>
 <script src="js/lib/jquery.js"></script>
 <script src="js/lib/toastr.js"></script>
 
 
 <script src="js/base.js"></script>
-<script src="js/events.js"></script>
-<script src="js/dataService.js"></script>
-<script src="js/eventService.js"></script>
-<script src="js/interfaceModule.js"></script>
-<script src="js/cardsModule.js"></script>
-<script src="js/main.js"></script>
+<script src="js/menu.js"></script>
 
 </body>
 </html>

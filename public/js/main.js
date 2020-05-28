@@ -27,6 +27,8 @@ function initGlobalDragListener() {
 
     // console.log('mousedown event', event);
 
+    activeSpaceElem = dataService.getActiveSpaceElem();
+
     if (event.target.classList.contains('space-content')) {
 
       startX = event.clientX;
@@ -140,22 +142,69 @@ function setSpaceToCenter() {
 
 }
 
+function renderSpaces(){
+
+  var resultHtml = '';
+  var container = document.querySelector('.zoom-wrap');
+
+  var spaces = dataService.getSpaces();
+
+  spaces.forEach(function(space, index){
+
+    var isActive = space.active ? 'active' : ''
+
+    var spaceHtml = '<div class="space ' + isActive + ' space-'+index+'"' +
+    'style="left: -25000px; top: -25000px;"' + 
+    '>';
+
+    spaceHtml = spaceHtml + '<div class="space-content"></div>';
+
+    spaceHtml = spaceHtml + '<div class="axis-y"></div>';
+    spaceHtml = spaceHtml + '<div class="axis-x"></div>';
+
+    spaceHtml = spaceHtml + '</div>';
+
+    resultHtml = resultHtml + spaceHtml;
+
+
+  })
+
+
+  container.innerHTML = resultHtml;
+
+  eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+
+  
+}
 
 function initSpace() {
 
   return new Promise(function(resolve, reject) {
 
-    fetch('/api/data').then(function(data){
+    var activeProject = localStorage.getItem('activeProject');
+
+    fetch('/api/get-project?name=' + activeProject).then(function(data){
       return data.json()
     }).then(function(data){
 
       var spaces = data.spaces
+
+      spaces.forEach(function(space){
+        space.active = false;
+      })
+
+      spaces[0].active = true;
+
+      dataService.setProject(data);
+      dataService.setSpaces(spaces)
+
+      renderSpaces();
+
       activeSpaceElem = document.querySelector('.space');
       activeSpace = spaces[0]
 
       console.log('fetch spaces', spaces)
 
-      dataService.setSpaces(spaces)
       dataService.setActiveSpace(spaces[0])
       dataService.setActiveSpaceElem(activeSpaceElem)
 
@@ -163,23 +212,25 @@ function initSpace() {
 
     }).catch(function(error){
 
-      console.log("Saved Filed not Found. Creating New Space")
+       console.log("Saved Filed not Found. Move to Index")
 
-      var space = {
-        id: toMD5('space_' + new Date())
-      }
+      location.href = '/';
 
-      var spaces = [];
+      // var space = {
+      //   id: toMD5('space_' + new Date())
+      // }
 
-      spaces.push(space)
-      activeSpaceElem = document.querySelector('.space');
-      activeSpace = space
+      // var spaces = [];
 
-      dataService.setSpaces(spaces)
-      dataService.setActiveSpace(space)
-      dataService.setActiveSpaceElem(activeSpaceElem)
+      // spaces.push(space)
+      // activeSpaceElem = document.querySelector('.space');
+      // activeSpace = space
 
-      resolve()
+      // dataService.setSpaces(spaces)
+      // dataService.setActiveSpace(space)
+      // dataService.setActiveSpaceElem(activeSpaceElem)
+
+      // resolve()
 
     })
 
@@ -187,32 +238,56 @@ function initSpace() {
 
 }
 
+function initEventListeners(){
+
+  eventService.addEventListener(EVENTS.RENDER_SPACES, function(){
+    renderSpaces();
+  })
+
+}
+
 function init(){
 
-  dataService = DataService();
-  eventService = EventService();
+  var activeProject = localStorage.getItem('activeProject');
 
-  constants = dataService.getConstants();
+  if (activeProject) {
 
-  initSpace().then(function(){
+    dataService = DataService();
+    eventService = EventService();
 
-    var intefaceModule = InterfaceModule(dataService, eventService)
-    var cardsModule = CardsModule(dataService, eventService)
+    constants = dataService.getConstants();
 
-    intefaceModule.init()
-    cardsModule.init()
+    initSpace().then(function(){
 
-    initGlobalDragListener();
-    initGlobalZoomListener();
-    setSpaceToCenter();
-    
-    eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+      initEventListeners()
 
-    var hash = window.location.hash.split('#/')[1]
+      var intefaceModule = InterfaceModule(dataService, eventService)
+      var cardsModule = CardsModule(dataService, eventService)
 
-    handleHashUrl(dataService, eventService, hash)
+      intefaceModule.init()
+      cardsModule.init()
 
-  })
+      initGlobalDragListener();
+      initGlobalZoomListener();
+      setSpaceToCenter();
+      
+      eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+
+      var hash = window.location.hash.split('#/')[1]
+
+      if(!hash) {
+        hash = '';
+      }
+
+      handleHashUrl(dataService, eventService, hash)
+
+    })
+
+  } else {
+
+    location.href = '/';
+
+  }
   
 }
 

@@ -2,47 +2,52 @@ function CardsModule(dataService, eventService) {
 
 	function renderCards(){
 
-	  var resultHtml = ''
-	  var cardHtml = '';
+		var spaces = dataService.getSpaces();
 
-	  var activeSpace = dataService.getActiveSpace();
-	  var activeSpaceElem = dataService.getActiveSpaceElem();
+		spaces.forEach(function(space, index) {
 
-	  if (activeSpace.cards) {
+		  	var resultHtml = ''
+		  	var cardHtml = '';
 
-	    activeSpace.cards.forEach(function(card){
+		  	var spaceElem = document.querySelector('.space-' + index);
 
-	      cardHtml = '<div class="card" ' + 
-	      'data-id="'+ card.id + '" '+
-	      'style="'+
-	      'left: ' + card.position.x + 'px;'+
-	      'top: ' + card.position.y + 'px;'+
-	      'width: ' + card.style.width + 'px;'+
-	      'height: ' + card.style.height + 'px;'+
-	      '" >';
+			if (space.cards) {
 
-	      cardHtml = cardHtml + '<div class="card-content">'
-	      cardHtml = cardHtml + '<div class="draggable-corner"></div>';
-	      cardHtml = cardHtml + '<div class="delete-corner"></div>';
-	      cardHtml = cardHtml + '<div class="resize-corner"></div>';
+			    space.cards.forEach(function(card){
 
-	      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
-	      cardHtml = cardHtml + '<textarea class="card-text">' + card.text + '</textarea>';
+			      cardHtml = '<div class="card" ' + 
+			      'data-id="'+ card.id + '" '+
+			      'style="'+
+			      'left: ' + card.position.x + 'px;'+
+			      'top: ' + card.position.y + 'px;'+
+			      'width: ' + card.style.width + 'px;'+
+			      'height: ' + card.style.height + 'px;'+
+			      '" >';
 
-	      cardHtml = cardHtml + '</div>'
-	      cardHtml = cardHtml + '</div>'
+			      cardHtml = cardHtml + '<div class="card-content">'
+			      cardHtml = cardHtml + '<div class="draggable-corner" title="Переместить"></div>';
+			      cardHtml = cardHtml + '<div class="delete-corner" title="Удалить"></div>';
+			      cardHtml = cardHtml + '<div class="resize-corner" title="Растянуть"></div>';
 
-	      resultHtml = resultHtml + cardHtml;
+			      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
+			      cardHtml = cardHtml + '<textarea class="card-text">' + card.text + '</textarea>';
+
+			      cardHtml = cardHtml + '</div>'
+			      cardHtml = cardHtml + '</div>'
+
+			      resultHtml = resultHtml + cardHtml;
 
 
 
-	    })
+			    })
 
-	  }
+			}
 
-	  activeSpaceElem.querySelector('.space-content').innerHTML = resultHtml
+			spaceElem.querySelector('.space-content').innerHTML = resultHtml
 
-	  setCardsEventListeners();
+			setCardsEventListeners();
+
+		  })
 
 	}
 

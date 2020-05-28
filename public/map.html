@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="Concept Map">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+
+    <title>Concept Map</title>
+
+    <link rel="stylesheet" type="text/css" href="css/lib/toastr.css">
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/cards.css">
+    <link rel="stylesheet" type="text/css" href="css/interface.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+
+<body class="body-map">
+
+<div class="inteface-element user-position"></div>
+
+<div class="inteface-element search-box">
+	
+	<input class="search-box-input" type="text" placeholder="Имя карточки">
+	<button class="search-box-button">Искать</button>
+
+</div>
+
+<div class="inteface-element spaces-box">
+
+    <div class="spaces-container"></div>
+    <div class="spaces-controls">
+        <input type="text" class="space-name-input">
+        <button class="add-space-button"> 
+            Добавить пространство
+        </button>
+    </div>
+</div>
+
+<button class="inteface-element export-button">Экспорт</button>
+<button class="inteface-element save-button">Сохранить</button>
+<button class="inteface-element add-card-button">Добавить карточку</button>
+<button class="inteface-element to-center-button">В центр</button>
+<button class="inteface-element reset-zoom-button">Сбросить Увеличение</button>
+<button class="inteface-element to-main-menu">Главное Меню</button>
+
+
+<div class="zoom-wrap"></div>
+
+
+<script src="js/lib/crypto.js"></script>
+<script src="js/lib/jquery.js"></script>
+<script src="js/lib/toastr.js"></script>
+
+
+<script src="js/base.js"></script>
+<script src="js/events.js"></script>
+<script src="js/dataService.js"></script>
+<script src="js/eventService.js"></script>
+<script src="js/interfaceModule.js"></script>
+<script src="js/cardsModule.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
