@@ -14,6 +14,8 @@ function EventService() {
 
   function dispatchEvent(event){
 
+      console.log("Event Dispatched: ", event);
+
       if (events[event]) {
 
         events[event].forEach(function(callback){

@@ -1,5 +1,41 @@
 function CardsModule(dataService, eventService) {
 
+	function compileText(text){
+
+		var result;
+		var pieces = text.split(' ')
+
+		pieces = pieces.map(function(word){
+
+			if (word[0] == '[') {
+
+				try {
+					var content = word.split('[')[1].split(']')[0];
+					var link = word.split('(')[1].split(')')[0];
+
+					return '<a class="card-link" href="/map.html#/goto=' + link + '">'+content+'</a>'
+
+				} catch(e) {
+
+					var content = word.split('[')[1].split(']')[0];
+
+					return '<a class="broken-link" href="/map.html#/goto=' + link + '">'+content+'</a>'
+				}
+
+				
+
+			}
+
+			return word
+
+		})
+
+		result = pieces.join(' ');
+
+		return result;
+
+	}
+
 	function renderCards(){
 
 		var spaces = dataService.getSpaces();
@@ -24,12 +60,16 @@ function CardsModule(dataService, eventService) {
 			      'height: ' + card.style.height + 'px;'+
 			      '" >';
 
+			      card.text_compiled = compileText(card.text);
+
 			      cardHtml = cardHtml + '<div class="card-content">'
 			      cardHtml = cardHtml + '<div class="draggable-corner" title="Переместить"></div>';
 			      cardHtml = cardHtml + '<div class="delete-corner" title="Удалить"></div>';
 			      cardHtml = cardHtml + '<div class="resize-corner" title="Растянуть"></div>';
+			      cardHtml = cardHtml + '<div class="edit-corner" title="Редактировать"></div>';
 
 			      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
+			      cardHtml = cardHtml + '<div class="card-text-compiled">' + card.text_compiled + '</div>';
 			      cardHtml = cardHtml + '<textarea class="card-text">' + card.text + '</textarea>';
 
 			      cardHtml = cardHtml + '</div>'
@@ -45,7 +85,7 @@ function CardsModule(dataService, eventService) {
 
 			spaceElem.querySelector('.space-content').innerHTML = resultHtml
 
-			setCardsEventListeners();
+			setCardsEventListeners(spaceElem);
 
 		  })
 
@@ -243,11 +283,31 @@ function CardsModule(dataService, eventService) {
 	  var cardId = cardElem.dataset.id
 	  var card = dataService.getCardById(cardId);
 
+	  cardElem.querySelector('.card-title').addEventListener('focus', function(event){
+	  	activeSpace = dataService.getActiveSpace();
+	  })
+
 	  cardElem.querySelector('.card-title').addEventListener('change', function(event) {
 
 	  	card.title = this.value;
 
 	  	console.log("card title change", card);
+	  	var count = 0
+
+	  	activeSpace.cards.forEach(function(item){
+
+	  		if (item.title == card.title) {
+	  			count = count + 1
+	  		}
+
+	  	})
+
+	  	if (count > 1) {
+	  		cardElem.classList.add('duplicate-card');
+	  	} else {
+	  		cardElem.classList.remove('duplicate-card');
+	  	}
+
 
 	  	dataService.setCardById(cardId, card);
 
@@ -272,24 +332,67 @@ function CardsModule(dataService, eventService) {
 
 	}
 
-	function setCardsEventListeners(){
+	function setCardTextareaBlurListener(cardElem) {
 
-	  var elements = document.querySelectorAll('.card');
+	  var cardId = cardElem.dataset.id
+	  var card = dataService.getCardById(cardId);
+
+	  cardElem.querySelector('.card-text').addEventListener('blur', function(event) {
+
+	  	console.log("Textare blur");
+
+	  	cardElem.querySelector('.card-text-compiled').style.display = 'block';
+	  	cardElem.querySelector('.card-text').style.display = 'none';
+
+	  	eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+	  	eventService.dispatchEvent(EVENTS.SAVE_PROJECT);
+
+	  })
+
+	}
+
+	function setCardEditClickListener(cardElem) {
+
+	  var cardId = cardElem.dataset.id
+	  var card = dataService.getCardById(cardId);
+
+	  cardElem.querySelector('.edit-corner').addEventListener('click', function(event) {
+
+	  	console.log('click compiled text event', event)
+
+	  	if (event.target.tagName != 'A') {
+
+		  	cardElem.querySelector('.card-text-compiled').style.display = 'none';
+		  	cardElem.querySelector('.card-text').style.display = 'block';
+
+		  	cardElem.querySelector('.card-text').focus();
+	  	
+	  	}
+
+	  })
+
+	}
+
+	function setCardsEventListeners(spaceElem){
+
+	  var elements = spaceElem.querySelectorAll('.card');
 
 	  var i;
 	  var cardElem;
 
-	  for(i = 0; i < elements.length; i = i + 1) {
+	  console.log('elements', elements);
 
-	    cardElem = elements[i];
+	  elements.forEach(function(cardElem) {
 
 	    setCardDraggableListener(cardElem);
 	    setCardDeleteListener(cardElem);
 	    setCardTitleChangeListener(cardElem);
 	    setCardTextChangeListener(cardElem);
 	    setCardResizeListener(cardElem);
+	    setCardEditClickListener(cardElem);
+	    setCardTextareaBlurListener(cardElem);
 
-	  }
+	  })
 
 	}
 

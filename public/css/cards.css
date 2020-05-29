@@ -36,6 +36,18 @@
     display: none;
 }
 
+.edit-corner {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    background: lightgreen;
+    cursor: pointer;
+
+    display: none;
+}
+
 .resize-corner {
     position: absolute;
     right: 0;
@@ -52,6 +64,10 @@
     opacity: .6
 }
 
+.edit-corner:hover {
+    opacity: .6
+}
+
 
 .card:hover .draggable-corner {
     display: block;
@@ -62,6 +78,10 @@
 }
 
 .card:hover .resize-corner {
+    display: block;
+}
+
+.card:hover .edit-corner {
     display: block;
 }
 
@@ -83,7 +103,7 @@
     border-bottom: 1px solid #000;
 }
 
-.card .card-text {
+.card .card-text-compiled {
     display: block;
     margin-top: 8px;
     resize: none;
@@ -93,4 +113,29 @@
     outline: none;
     font-size: 14px;
     border: 0;
+    white-space: pre-wrap;
+}
+
+.card .card-text {
+    display: none;
+    margin-top: 8px;
+    resize: none;
+    width: 100%;
+    padding-bottom: 20px;
+    height: calc(100% - 34px);
+    outline: none;
+    font-size: 14px;
+    border: 0;
+}
+
+.broken-link {
+    color: red;
+}
+
+.card-link:visited {
+    color: rgb(0, 0, 238);
+}
+
+.duplicate-card {
+    border: 1px solid red;
 }

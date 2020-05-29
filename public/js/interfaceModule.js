@@ -5,11 +5,36 @@ function InterfaceModule(dataService, eventService) {
   var activeSpaceElem;
   var constants;
 
+  function saveProject(){
+
+      var body = dataService.getProject();
+
+      body.spaces = dataService.getSpaces()
+
+      fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }).then(function(data){
+          toastr.info('Сохранено')
+      })
+
+  }
+
   function setEventListeners(){
 
     eventService.addEventListener(EVENTS.RENDER_SPACES_TABS, function(){
 
       renderSpacesTabs();
+
+    })
+
+    eventService.addEventListener(EVENTS.SAVE_PROJECT, function(){
+
+      saveProject();
 
     })
 
@@ -129,6 +154,9 @@ function InterfaceModule(dataService, eventService) {
       var diffLeft = -constants.OFFSET_LEFT - left;
       var diffTop = -constants.OFFSET_TOP - top;
 
+      console.log('diffLeft', diffLeft);
+      console.log('diffTop', diffTop);
+
       var halfScreenWidth = document.body.clientWidth / 2;
       var halfScreenHeight = document.body.clientHeight / 2;
 
@@ -155,20 +183,7 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.save-button').addEventListener('click', function(event) {
 
-        var body = dataService.getProject();
-
-        body.spaces = dataService.getSpaces()
-
-        fetch('/api/save', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(body)
-        }).then(function(data){
-            toastr.info('Сохранено')
-        })
+        saveProject();
 
     })
 
