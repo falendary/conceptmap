@@ -1,38 +1,179 @@
 function CardsModule(dataService, eventService) {
 
-	function compileText(text){
+	function eatLink(pos, text){
 
-		var result;
-		var pieces = text.split(' ')
+		var index = pos + 1;
+		var token = {
+			valueText: '',
+			valueLink: '',
+			type: 'link'
+		}
 
-		pieces = pieces.map(function(word){
 
-			if (word[0] == '[') {
+		for (index; index < text.length; index = index + 1) {
 
-				try {
-					var content = word.split('[')[1].split(']')[0];
-					var link = word.split('(')[1].split(')')[0];
+			if (text[index] == ']') {
+				break;
+			} else {
+				token.valueText = token.valueText + text[index];
+			}
 
-					return '<a class="card-link" href="/map.html#/goto=' + link + '">'+content+'</a>'
+		}
 
-				} catch(e) {
+		var index = index + 1; // move index to ]
 
-					var content = word.split('[')[1].split(']')[0];
+		if (text[index] == '(') {
 
-					return '<a class="broken-link" href="/map.html#/goto=' + link + '">'+content+'</a>'
+			var index = index + 1; // skip pos at ( 
+
+			for (index; index < text.length; index = index + 1) {
+
+				if (text[index] == ')') {
+					break;
+				} else {
+					token.valueLink = token.valueLink + text[index];
 				}
-
-				
 
 			}
 
-			return word
+		}
 
-		})
+		return token
 
-		result = pieces.join(' ');
 
-		return result;
+	}
+
+	function eatBold(pos, text){
+
+		var token = {
+			value: '',
+			type: 'bold'
+		}
+
+		var index = pos + 1; // start from next symbol to _
+
+		for (index; index < text.length; index = index + 1) {
+
+			if (text[index] == '*') {
+				break;
+			} else {
+				token.value = token.value + text[index];
+			}
+
+		}
+
+		return token;
+
+	}
+
+	function eatCursive(pos, text){
+
+		var token = {
+			value: '',
+			type: 'cursive'
+		}
+
+		var index = pos + 1; // start from next symbol to _
+
+		for (index; index < text.length; index = index + 1) {
+
+			if (text[index] == '_') {
+				break;
+			} else {
+				token.value = token.value + text[index];
+			}
+
+		}
+
+		return token;
+
+	}
+
+	function compileText(text){
+
+		var resultText = '';
+		var pos = 0;
+		var processing = true;
+		var token;
+
+		// console.log('compileText.text', text)
+
+		if (!text.length) {
+			processing = false;
+		}
+
+		while (processing) {
+			
+			if (text[pos] == '_') {
+
+				token = eatCursive(pos, text);
+
+				pos = pos + token.value.length + 2; // for both _ 
+
+			}
+			else if (text[pos] == '*') {
+
+				token = eatBold(pos, text);
+
+				pos = pos + token.value.length + 2; // for both _ 
+
+			}
+			else if (text[pos] == '[') {
+
+				token = eatLink(pos, text);
+
+				pos = pos + token.valueText.length + 2; // for [ and ]
+				pos = pos + token.valueLink.length + 2; // for ( and )
+
+			}
+			else {
+
+				token = {
+					value: text[pos],
+					type: 'unknown'
+				}
+				pos = pos + token.value.length;
+
+			}
+
+			if (token) {
+
+				if (token.type == 'unknown') {
+					resultText = resultText + token.value;
+				}
+
+				if (token.type == 'cursive') {
+					resultText = resultText + '<i>' + token.value + '</i>';
+				}
+
+				if (token.type == 'bold') {
+					resultText = resultText + '<b>' + token.value + '</b>';
+				}
+
+				if (token.type == 'link') {
+					
+					if (token.valueLink) {
+
+						resultText = resultText + '<a class="card-link" href="map.html#/goto=' + token.valueLink + '">' + token.valueText + '</a>';
+
+					} else {
+
+						resultText = resultText + '<a class="broken-link" href="map.html">' + token.valueText + '</a>';
+
+					}
+				}
+
+			}
+			
+			if (pos >= text.length) {
+				processing = false;
+			}
+
+		}
+
+		// console.log('compileText.resultText', resultText);
+
+		return resultText;
 
 	}
 
@@ -379,8 +520,6 @@ function CardsModule(dataService, eventService) {
 
 	  var i;
 	  var cardElem;
-
-	  console.log('elements', elements);
 
 	  elements.forEach(function(cardElem) {
 

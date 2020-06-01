@@ -136,6 +136,10 @@
     color: rgb(0, 0, 238);
 }
 
+.card-link:hover {
+    text-decoration: none;
+}
+
 .duplicate-card {
     border: 1px solid red;
 }
