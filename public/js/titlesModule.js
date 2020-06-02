@@ -29,9 +29,7 @@ function TitlesModule(dataService, eventService) {
 			      itemHtml = itemHtml + '<div class="delete-corner" title="Удалить"></div>';
 			      itemHtml = itemHtml + '<div class="resize-corner" title="Растянуть"></div>';
 
-			      // itemHtml = itemHtml + '<input class="title-value" type="text" value="' + item.title + '">';
-
-			      itemHtml = itemHtml + '<textarea class="title-value">' + item.title + '</textarea>';
+			      itemHtml = itemHtml + '<textarea class="title-text">' + item.text + '</textarea>';
 
 
 			      itemHtml = itemHtml + '</div>'
@@ -253,15 +251,15 @@ function TitlesModule(dataService, eventService) {
 	  var titleId = elem.dataset.id
 	  var title = dataService.getTitleById(titleId);
 
-	  elem.querySelector('.title-value').addEventListener('focus', function(event){
+	  elem.querySelector('.title-text').addEventListener('focus', function(event){
 	  	activeSpace = dataService.getActiveSpace();
 	  })
 
-	  elem.querySelector('.title-value').addEventListener('change', function(event) {
+	  elem.querySelector('.title-text').addEventListener('change', function(event) {
 
-	  	title.title = this.value;
+	  	title.text = this.value;
 
-	  	if(!title.title) {
+	  	if(!title.text) {
 	  		elem.classList.add('empty-title')
 	  	} else {
 	  		elem.classList.remove('empty-title')

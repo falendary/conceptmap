@@ -210,16 +210,16 @@ function InterfaceModule(dataService, eventService) {
         id: toMD5('title_' + new Date()),
         position: {
           x: constants.OFFSET_LEFT + diffLeft + halfScreenWidth - 90,
-          y: constants.OFFSET_TOP + diffTop + halfScreenHeight - 120
+          y: constants.OFFSET_TOP + diffTop + halfScreenHeight - 16
         },
         style: {
           width: 180,
           height: 32
         },
-        title: 'Hello there'
+        text: 'Hello there'
       })
 
-      console.log('Card added', activeSpace);
+      console.log('Title added', activeSpace);
 
       eventService.dispatchEvent(EVENTS.RENDER_TITLES)
 

@@ -186,6 +186,7 @@ function renderSpaces(){
   container.innerHTML = resultHtml;
 
   eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+  eventService.dispatchEvent(EVENTS.RENDER_TITLES);
 
   
 }
