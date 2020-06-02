@@ -224,7 +224,18 @@ function CardsModule(dataService, eventService) {
 
 			}
 
-			spaceElem.querySelector('.space-content').innerHTML = resultHtml
+			var container = spaceElem.querySelector('.space-content').querySelector('.cards-container');
+
+			if(!container) {
+
+				var elem = document.createElement('div')
+				elem.classList.add('cards-container')
+				spaceElem.querySelector('.space-content').appendChild(elem)
+
+				container = spaceElem.querySelector('.space-content').querySelector('.cards-container');
+			}
+
+			container.innerHTML = resultHtml
 
 			setCardsEventListeners(spaceElem);
 

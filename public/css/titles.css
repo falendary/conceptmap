@@ -1,0 +1,40 @@
+.title {
+    position: absolute;
+    border: 1px dotted transparent;
+    background: transparent;
+}
+.title:hover {
+	border: 1px dotted #000;
+}
+.title-content {
+	width: 100%;
+	height: 100%;
+}
+
+.title:hover .draggable-corner {
+    display: block;
+}
+
+.title:hover .delete-corner {
+    display: block;
+}
+
+.title:hover .resize-corner {
+    display: block;
+}
+
+
+.title-value {
+	background: transparent;
+    border: 0;
+    margin-left: 16px;
+    min-height: 32px;
+    outline: none;
+    resize: none;
+    width: calc(100% - 32px);
+    height: 100%;
+}
+
+.empty-title {
+	border: 1px dotted red;
+}

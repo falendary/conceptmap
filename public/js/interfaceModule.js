@@ -187,6 +187,44 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
+    document.querySelector('.add-title-button').addEventListener('click', function(event){
+
+      if(!activeSpace.titles) {
+        activeSpace.titles = []
+      }
+
+      var left = parseInt(activeSpaceElem.style.left.split("px")[0], 10);
+      var top = parseInt(activeSpaceElem.style.top.split("px")[0], 10);
+
+      var diffLeft = -constants.OFFSET_LEFT - left;
+      var diffTop = -constants.OFFSET_TOP - top;
+
+      console.log('diffLeft', diffLeft);
+      console.log('diffTop', diffTop);
+
+      var halfScreenWidth = document.body.clientWidth / 2;
+      var halfScreenHeight = document.body.clientHeight / 2;
+
+      activeSpace.titles.push({
+        spaceId: activeSpace.id,
+        id: toMD5('title_' + new Date()),
+        position: {
+          x: constants.OFFSET_LEFT + diffLeft + halfScreenWidth - 90,
+          y: constants.OFFSET_TOP + diffTop + halfScreenHeight - 120
+        },
+        style: {
+          width: 180,
+          height: 32
+        },
+        title: 'Hello there'
+      })
+
+      console.log('Card added', activeSpace);
+
+      eventService.dispatchEvent(EVENTS.RENDER_TITLES)
+
+    })
+
     document.querySelector('.export-button').addEventListener('click', function(event) {
 
       var body = dataService.getProject();

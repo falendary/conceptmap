@@ -3,7 +3,8 @@ function DataService() {
   state = {
     project: null,
     spaces: [],
-    activeSpace: null
+    activeSpace: null,
+    scale: 1
   }
 
   function getConstants(){
@@ -97,6 +98,64 @@ function DataService() {
 
   }
 
+  function setCurrentScale(scale){
+    state.scale = scale;
+  }
+
+  function getCurrentScale() {
+    return state.scale;
+  }
+
+  function getTitleById(id) {
+
+    var result = null;
+
+    for(var i = 0; i < state.activeSpace.titles.length; i = i + 1) {
+
+      if (id == state.activeSpace.titles[i].id) {
+        result = state.activeSpace.titles[i];
+        break;
+      } 
+
+    }
+
+    return result;
+
+  }
+
+  function deleteTitleById(id) {
+
+    for(var i = 0; i < state.activeSpace.titles.length; i = i + 1) {
+
+      if (id == state.activeSpace.titles[i].id) {
+        
+        state.activeSpace.titles.splice(i, 1)
+
+        break;
+
+      } 
+
+    }
+
+  }
+
+  function setTitleById(id, card) {
+
+    for(var i = 0; i < state.activeSpace.titles.length; i = i + 1) {
+
+      if (id == state.activeSpace.titles[i].id) {
+        
+        state.activeSpace.titles.splice(i, 1)
+        state.activeSpace.titles.push(Object.assign({}, card))
+
+        break;
+
+      } 
+
+    }
+
+  }
+
   return {
 
     getConstants: getConstants,
@@ -115,7 +174,14 @@ function DataService() {
 
     getCardById: getCardById,
     setCardById: setCardById,
-    deleteCardById: deleteCardById
+    deleteCardById: deleteCardById,
+
+    setCurrentScale: setCurrentScale,
+    getCurrentScale: getCurrentScale,
+
+    getTitleById: getTitleById,
+    deleteTitleById: deleteTitleById,
+    setTitleById: setTitleById
 
   }
 

@@ -22,6 +22,7 @@ function initGlobalDragListener() {
   var currentX;
 
   var mousePressed = false;
+  var currentScale;
 
   document.body.addEventListener('mousedown', function(event) {
 
@@ -53,6 +54,8 @@ function initGlobalDragListener() {
 
   document.body.addEventListener('mousemove', function(event) {
 
+    currentScale = dataService.getCurrentScale();
+
     if (mousePressed) {
 
       // console.log('mousemove event', event);
@@ -68,8 +71,16 @@ function initGlobalDragListener() {
           currentX = 0
       }
 
-      activeSpaceElem.style.top = currentY + lastY - startY + 'px';
-      activeSpaceElem.style.left =  currentX + lastX - startX + 'px';
+      var diffTop = lastY - startY;
+      var diffLeft = lastX - startX;
+
+      var resultTop = currentY + diffTop
+      var resultLeft = currentX + diffLeft
+
+      console.log('currentScale', currentScale);
+
+      activeSpaceElem.style.top = resultTop + 'px';
+      activeSpaceElem.style.left = resultLeft + 'px';
 
     }
 
@@ -127,6 +138,8 @@ function initGlobalZoomListener(){
         .css("transform-origin", touchX + 'px ' + touchY + 'px')
         .css("transform", 'scale(' + scale + ')');
      }
+
+     dataService.setCurrentScale(scale);
 
   });
 
@@ -247,15 +260,18 @@ function init(){
 
       var intefaceModule = InterfaceModule(dataService, eventService)
       var cardsModule = CardsModule(dataService, eventService)
+      var titlesModule = TitlesModule(dataService, eventService)
 
       intefaceModule.init()
       cardsModule.init()
+      titlesModule.init()
 
       initGlobalDragListener();
       initGlobalZoomListener();
       setSpaceToCenter();
       
       eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+      eventService.dispatchEvent(EVENTS.RENDER_TITLES);
 
       var hash = window.location.hash.split('#/')[1]
 
@@ -294,73 +310,94 @@ function handleHashUrl(dataService, eventService, hash) {
 
       var resultCard;
 
-      var valuePieces = value.split('/');
-      var spaceName = valuePieces[0];
-      var cardName = valuePieces[1];
+      if (value.indexOf('/') !== -1) {
 
-      var spaces = dataService.getSpaces();
-      var activeSpaceIndex;
-      var newActiveSpace;
+        console.log("lookup in specific space");
 
-      spaces.forEach(function(space){
-        space.active = false;
-      })
+        var valuePieces = value.split('/');
+        var spaceName = valuePieces[0];
+        var cardName = valuePieces[1];
 
-      spaces.forEach(function(space, index){
-        if(space.name.toLocaleLowerCase() == spaceName.toLocaleLowerCase()){
-          newActiveSpace = space;
-          activeSpaceIndex = index
-        }
-      })
+        var spaces = dataService.getSpaces();
+        var activeSpaceIndex;
+        var newActiveSpace;
 
-      if (newActiveSpace) {
+        spaces.forEach(function(space){
+          space.active = false;
+        })
 
-        console.log('newActiveSpace', newActiveSpace);
+        spaces.forEach(function(space, index){
+          if(space.name.toLocaleLowerCase() == spaceName.toLocaleLowerCase()){
+            newActiveSpace = space;
+            activeSpaceIndex = index
+          }
+        })
 
-        activeSpace = newActiveSpace
+        if (newActiveSpace) {
 
-        activeSpace.active = true;
+          console.log('newActiveSpace', newActiveSpace);
+
+          activeSpace = newActiveSpace
+
+          activeSpace.active = true;
+          
+          dataService.setActiveSpace(activeSpace);
         
-        dataService.setActiveSpace(activeSpace);
-      
+
+          activeSpace.cards.forEach(function(card){
+
+            if (card.title.toLocaleLowerCase() == cardName.toLocaleLowerCase()) {
+                resultCard = card;
+            }
+
+          })
+
+          eventService.dispatchEvent(EVENTS.RENDER_SPACES);
+
+          activeSpaceElem = document.querySelector('.space-' + activeSpaceIndex)
+          dataService.setActiveSpaceElem(activeSpaceElem);
+
+          eventService.dispatchEvent(EVENTS.RENDER_SPACES_TABS);
+
+        }
+
+      } else {
+
+        console.log("lookup in active space");
+
+        activeSpace = dataService.getActiveSpace();
+
+        console.log('activeSpace.cards', activeSpace.cards);
 
         activeSpace.cards.forEach(function(card){
 
-          if (card.title.toLocaleLowerCase() == cardName.toLocaleLowerCase()) {
+          if (card.title.toLocaleLowerCase() == value.toLocaleLowerCase()) {
               resultCard = card;
           }
 
         })
 
-        eventService.dispatchEvent(EVENTS.RENDER_SPACES);
+      }
 
-        activeSpaceElem = document.querySelector('.space-' + activeSpaceIndex)
-        dataService.setActiveSpaceElem(activeSpaceElem);
+      if (resultCard) {
 
-        eventService.dispatchEvent(EVENTS.RENDER_SPACES_TABS);
+        var startLeft = parseInt(activeSpaceElem.style.left.split('px')[0], 10);
+        var startTop = parseInt(activeSpaceElem.style.top.split('px')[0], 10);
 
-        if (resultCard) {
+        var startLeft = -constants.OFFSET_LEFT
+        var startTop = -constants.OFFSET_TOP
 
-            var startLeft = parseInt(activeSpaceElem.style.left.split('px')[0], 10);
-            var startTop = parseInt(activeSpaceElem.style.top.split('px')[0], 10);
+        var diffLeft = constants.OFFSET_LEFT - resultCard.position.x
+        var diffTop = constants.OFFSET_TOP - resultCard.position.y
 
-            var startLeft = -constants.OFFSET_LEFT
-            var startTop = -constants.OFFSET_TOP
+        var halfScreenWidth = document.body.clientWidth / 2;
+        var halfScreenHeight = document.body.clientHeight / 2;
 
-            var diffLeft = constants.OFFSET_LEFT - resultCard.position.x
-            var diffTop = constants.OFFSET_TOP - resultCard.position.y
+        var halfCardHeight = resultCard.style.height / 2;
+        var halfCardWidth  = resultCard.style.width / 2;
 
-            var halfScreenWidth = document.body.clientWidth / 2;
-            var halfScreenHeight = document.body.clientHeight / 2;
-
-            var halfCardHeight = resultCard.style.height / 2;
-            var halfCardWidth  = resultCard.style.width / 2;
-
-            activeSpaceElem.style.left = startLeft + diffLeft + halfScreenWidth - halfCardWidth + 'px';
-            activeSpaceElem.style.top = startTop + diffTop + halfScreenHeight - halfCardHeight + 'px';
-
-        }
-
+        activeSpaceElem.style.left = startLeft + diffLeft + halfScreenWidth - halfCardWidth + 'px';
+        activeSpaceElem.style.top = startTop + diffTop + halfScreenHeight - halfCardHeight + 'px';
 
       }
 
