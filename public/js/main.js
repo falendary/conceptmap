@@ -392,6 +392,10 @@ function handleHashUrl(dataService, eventService, hash) {
 
           eventService.dispatchEvent(EVENTS.RENDER_SPACES_TABS);
 
+          eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+          eventService.dispatchEvent(EVENTS.RENDER_TITLES);
+          eventService.dispatchEvent(EVENTS.RENDER_IMAGES);
+
         }
 
       } else {

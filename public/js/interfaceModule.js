@@ -136,6 +136,55 @@ function InterfaceModule(dataService, eventService) {
 
   }
 
+  function goTo(link) {
+
+    window.location.hash = '#/';
+
+    setTimeout(function(){
+
+      window.location.hash = '#/goto=' + link;
+      
+    }, 0)
+
+  }
+
+  function handleSearchBox() {
+
+    document.querySelector('.search-box-button').addEventListener('click', function(event) {
+
+      var input = document.querySelector('.search-box-input');
+
+      var spaceName = activeSpace.name
+
+      var link = spaceName + '/' + input.value
+
+      goTo(link)
+
+      input.value = '';
+      
+
+    })
+
+    document.querySelector('.search-box-input').addEventListener('keydown', function(event){
+
+      if (event.keyCode == 13) {
+
+        var input = document.querySelector('.search-box-input');
+
+        var spaceName = activeSpace.name
+
+        var link = spaceName + '/' + input.value
+
+        goTo(link)
+
+        input.value = '';
+
+      }
+
+    })
+
+  }
+
   function init(){
 
     setEventListeners();
@@ -266,7 +315,7 @@ function InterfaceModule(dataService, eventService) {
           width: 100,
           height: 100
         },
-        source: 'content/spaces/default/default_image.png'
+        source: null
       })
 
       console.log('Image added', activeSpace);
@@ -296,22 +345,8 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
-    document.querySelector('.search-box-button').addEventListener('click', function(event) {
+    handleSearchBox();
 
-      var input = document.querySelector('.search-box-input');
-
-      window.location.hash = '#/';
-
-      var spaceName = activeSpace.name
-
-      setTimeout(function(){
-
-        window.location.hash = '#/goto=' + spaceName + '/' + input.value;
-        input.value = '';
-
-      }, 0)
-
-    })
 
     document.querySelector('.reset-zoom-button').addEventListener('click', function(event){
 
@@ -375,6 +410,23 @@ function InterfaceModule(dataService, eventService) {
       saveProject();
 
     });
+
+
+    document.body.addEventListener('keydown', function(event){
+
+       if (event.keyCode == 9){
+
+          event.preventDefault();
+
+          var elem = document.querySelector('.search-box-input');
+          elem.focus()
+       }
+
+
+
+
+    })
+
 
     console.log("Interface ready");
 

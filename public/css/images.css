@@ -35,6 +35,21 @@
     z-index: 1;
 }
 
+.no-image {
+    width: 100%;
+    height: 100%;
+    font-size: 50px;
+    border: 1px dotted #777;
+}
+.no-image i {
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    left: 50%;
+    margin-left: -25px;
+    opacity: .7;
+}
+
 .delete-corner {
     position: absolute;
     right: 0;

@@ -2,6 +2,15 @@
     cursor: pointer;
 }
 
+.interface-toolbar {
+    position: fixed;
+    bottom: 8px;
+    z-index: 2;
+    left: 50%;
+    width: 800px;
+    margin-left: -400px;
+}
+
 .to-main-menu {
     top: 8px;
     left: 8px;
@@ -25,6 +34,7 @@
     text-align: center;
     line-height: 1.5;
     outline: none;
+    cursor: pointer;
 }
 
 .to-center-button:hover {
@@ -32,52 +42,62 @@
 }
 
 .reset-zoom-button {
-    bottom: 16px;
-    left: 50%;
-    margin-left: 124px;
-    height: 60px;
-    width: 100px;
+    bottom: 8px;
+    left: 164px;
+    height:24px;
+    width: 24px;
+    font-size: 10px;
+}
+
+.interface-button {
+    background: #fff;
+    border: 1px solid #000;
+    outline: none;
+}
+
+.interface-button:hover {
+    background: #ddd;
 }
 
 .add-card-button {
-    bottom: 16px;
+/*    bottom: 8px;
     left: 50%;
-    margin-left: -96px;
-    height: 60px;
-    width: 80px;
+    margin-left: -96px;*/
+    height: 32px;
+    width: 128px;
 }
 
 .add-title-button {
-    bottom: 16px;
+/*    bottom: 8px;
     left: 50%;
-    margin-left: -280px;
-    height: 60px;
-    width: 80px;
+    margin-left: -280px;*/
+    height: 32px;
+    width: 128px;
 }
 
 .add-image-button {
-    bottom: 16px;
+/*    bottom: 8px;
     left: 50%;
-    margin-left: -190px;
-    height: 60px;
-    width: 80px;
+    margin-left: -190px;*/
+    height: 32px;
+    width: 128px;
 }
 
 .save-button {
 
-    bottom: 16px;
+/*    bottom: 8px;
     left: 50%;
-    margin-left: -370px;
-    height: 60px;
-    width: 80px;
+    margin-left: -370px;*/
+    height: 32px;
+    width: 100px;
 }
 
 .export-button {
 
-    bottom: 16px;
+    /*bottom: 8px;
     left: 50%;
-    margin-left: -460px;
-    height: 60px;
+    margin-left: -460px;*/
+    height: 32px;
     width: 80px;
 
 }
@@ -121,8 +141,8 @@
 }
 
 .spaces-box {
-    top: 16px;
-    right: 16px;
+    top: 8px;
+    right: 8px;
     overflow: hidden;
 }
 

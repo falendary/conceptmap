@@ -32,7 +32,11 @@ function ImagesModule(dataService, eventService) {
 		      itemHtml = itemHtml + '<label for="img-input-' + item.id + '" class="edit-corner" title="Изменить"></label>';
 		      itemHtml = itemHtml + '<input class="image-file-input" id="img-input-' + item.id + '" type="file">';
 
-		      itemHtml = itemHtml + '<img src="' + item.source + '">';
+		      if (item.source) {
+		      	itemHtml = itemHtml + '<img src="' + item.source + '">';
+			  } else {
+			  	itemHtml = itemHtml + '<div class="no-image "><i class="fa fa-picture-o" aria-hidden="true"></i></div>';
+			  }
 
 		      itemHtml = itemHtml + '</div>'
 		      itemHtml = itemHtml + '</div>'
