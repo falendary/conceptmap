@@ -20,7 +20,26 @@ function InterfaceModule(dataService, eventService) {
         body: JSON.stringify(body)
       }).then(function(data){
           toastr.info('Сохранено')
+      }).catch(function(error){
+        toastr.error('Ошибка', error)
+        console.log('error', error);
+
+        exportProjectToFile();
+
       })
+
+  }
+
+  function exportProjectToFile(){
+
+    var body = dataService.getProject();
+
+    body.spaces = dataService.getSpaces()
+
+    var date = new Date().toISOString().split('T')[0]
+
+    downloadFile(JSON.stringify(body), 'application/json', 'Concept Map ' + date + '.json')
+
 
   }
 
@@ -69,6 +88,9 @@ function InterfaceModule(dataService, eventService) {
         activeSpaceElem = document.querySelector('.space-' + index);
 
         dataService.setActiveSpaceElem(activeSpaceElem);
+  
+        eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+        eventService.dispatchEvent(EVENTS.RENDER_TITLES);
 
         renderSpacesTabs();
 
@@ -126,6 +148,7 @@ function InterfaceModule(dataService, eventService) {
     console.log('interface activeSpaceElem', activeSpaceElem);
 
     userPositionElem = document.querySelector('.user-position')
+    userPositionElem.innerHTML = 'X:'+ 1000 + ' Y:' + 1000;
 
     document.querySelector('.to-center-button').addEventListener('click', function(event){
 
@@ -143,10 +166,6 @@ function InterfaceModule(dataService, eventService) {
     })
 
     document.querySelector('.add-card-button').addEventListener('click', function(event){
-
-      if(!activeSpace.cards) {
-        activeSpace.cards = []
-      }
 
       var left = parseInt(activeSpaceElem.style.left.split("px")[0], 10);
       var top = parseInt(activeSpaceElem.style.top.split("px")[0], 10);
@@ -189,9 +208,6 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.add-title-button').addEventListener('click', function(event){
 
-      if(!activeSpace.titles) {
-        activeSpace.titles = []
-      }
 
       var left = parseInt(activeSpaceElem.style.left.split("px")[0], 10);
       var top = parseInt(activeSpaceElem.style.top.split("px")[0], 10);
@@ -225,15 +241,43 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
+    document.querySelector('.add-image-button').addEventListener('click', function(event){
+
+      var left = parseInt(activeSpaceElem.style.left.split("px")[0], 10);
+      var top = parseInt(activeSpaceElem.style.top.split("px")[0], 10);
+
+      var diffLeft = -constants.OFFSET_LEFT - left;
+      var diffTop = -constants.OFFSET_TOP - top;
+
+      console.log('diffLeft', diffLeft);
+      console.log('diffTop', diffTop);
+
+      var halfScreenWidth = document.body.clientWidth / 2;
+      var halfScreenHeight = document.body.clientHeight / 2;
+
+      activeSpace.images.push({
+        spaceId: activeSpace.id,
+        id: toMD5('image_' + new Date()),
+        position: {
+          x: constants.OFFSET_LEFT + diffLeft + halfScreenWidth - 50,
+          y: constants.OFFSET_TOP + diffTop + halfScreenHeight - 50
+        },
+        style: {
+          width: 100,
+          height: 100
+        },
+        source: 'content/spaces/default/default_image.png'
+      })
+
+      console.log('Image added', activeSpace);
+
+      eventService.dispatchEvent(EVENTS.RENDER_IMAGES)
+
+    })
+
     document.querySelector('.export-button').addEventListener('click', function(event) {
 
-      var body = dataService.getProject();
-
-      body.spaces = dataService.getSpaces()
-
-      var date = new Date().toISOString().split('T')[0]
-
-      downloadFile(JSON.stringify(body), 'application/json', 'Concept Map ' + date + '.json')
+      exportProjectToFile()
 
     })
 
@@ -242,7 +286,13 @@ function InterfaceModule(dataService, eventService) {
       var left = parseInt(activeSpaceElem.style.left.split("px")[0], 10);
       var top = parseInt(activeSpaceElem.style.top.split("px")[0], 10);
 
-      userPositionElem.innerHTML = 'X: '+ (-(left + constants.OFFSET_LEFT - event.clientX)) + ', Y:' + (top + constants.OFFSET_TOP - event.clientY);
+      var valueX = 0;
+      var valueY = 0;
+
+      valueX = (-(left + constants.OFFSET_LEFT - event.clientX))
+      valueY = (top + constants.OFFSET_TOP - event.clientY)
+
+      userPositionElem.innerHTML = 'X:'+ valueX + ' Y:' + valueY;
 
     })
 
@@ -317,6 +367,14 @@ function InterfaceModule(dataService, eventService) {
       dataService.setActiveSpaceElem(activeSpaceElem)
 
     })
+
+    window.addEventListener('beforeunload', (event) => {
+       
+      console.log('beforeunload event', event);
+
+      saveProject();
+
+    });
 
     console.log("Interface ready");
 

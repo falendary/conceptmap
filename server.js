@@ -3,13 +3,14 @@ var dotenv = require('dotenv');
 var bodyParser = require('body-parser')
 
 var fs = require('fs');
+var formidable = require('formidable');
 
 dotenv.config();
 
 var app = express();
 var port = 3000;
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb', extended: true}))
 
 app.use(express.static('public'));
 
@@ -60,11 +61,39 @@ app.post('/api/projects', function(req, res){
 
 app.post('/api/save', function(req, res) {
 
-	console.log('save', __dirname)
+	console.log('Save ' + new Date() )
 
 	fs.writeFileSync(__dirname + '/data/' + req.body.name + '.json', JSON.stringify(req.body));
 
 	res.status(200).send({status: 'ok'})
+
+})
+
+app.post('/api/upload', function(req, res) {
+
+	var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+
+		console.log("fields", fields);
+		console.log("files", files);
+
+	  var dir = __dirname + '/public/content/spaces/' + fields['spaceId']
+      var link = '/content/spaces/' + fields['spaceId']+ '/' + files['image'].name;
+
+      var oldpath = files['image'].path;
+      var newpath = __dirname + '/public' + link;
+
+      if (!fs.existsSync(dir)){
+	     fs.mkdirSync(dir);
+	   }
+
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
+        res.json({source: link});
+        res.end();
+      });
+
+  	});
 
 })
 

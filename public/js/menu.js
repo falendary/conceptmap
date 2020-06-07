@@ -9,7 +9,7 @@ function setOpenButtonEventListeners(){
 
 		button.addEventListener('click', function(event) {
 
-			var project = button.dataset.project
+			var project = this.dataset.project
 
 			console.log('project', project);
 
@@ -86,9 +86,11 @@ function init() {
 
 	  var projectName = document.querySelector('.project-name-input').value;
 	  var space = {
-	  	name: 'Пространство',
+	  	name: 'Главная',
 	  	active: true,
-        id: toMD5('space_' + new Date())
+        id: toMD5('space_' + new Date()),
+        cards: [],
+        titles: []
       }
 
 	  var project = {

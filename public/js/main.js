@@ -185,8 +185,8 @@ function renderSpaces(){
 
   container.innerHTML = resultHtml;
 
-  eventService.dispatchEvent(EVENTS.RENDER_CARDS);
-  eventService.dispatchEvent(EVENTS.RENDER_TITLES);
+  // eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+  // eventService.dispatchEvent(EVENTS.RENDER_TITLES);
 
   
 }
@@ -244,6 +244,33 @@ function initEventListeners(){
 
 }
 
+function fixDataStructure(){
+
+  spaces = dataService.getSpaces();
+
+  spaces = spaces.map(function(space){
+
+    if (!space.hasOwnProperty('cards')) {
+      space.cards = []
+    }
+
+    if (!space.hasOwnProperty('titles')) {
+      space.titles = []
+    }
+
+    if (!space.hasOwnProperty('images')) {
+      space.images = []
+    }
+
+    return space
+
+  })
+
+  dataService.setSpaces(spaces);
+
+
+}
+
 function init(){
 
   var activeProject = localStorage.getItem('activeProject');
@@ -262,17 +289,22 @@ function init(){
       var intefaceModule = InterfaceModule(dataService, eventService)
       var cardsModule = CardsModule(dataService, eventService)
       var titlesModule = TitlesModule(dataService, eventService)
+      var imagesModule = ImagesModule(dataService, eventService)
 
       intefaceModule.init()
       cardsModule.init()
       titlesModule.init()
+      imagesModule.init()
 
       initGlobalDragListener();
       initGlobalZoomListener();
       setSpaceToCenter();
+
+      fixDataStructure()
       
       eventService.dispatchEvent(EVENTS.RENDER_CARDS);
       eventService.dispatchEvent(EVENTS.RENDER_TITLES);
+      eventService.dispatchEvent(EVENTS.RENDER_IMAGES);
 
       var hash = window.location.hash.split('#/')[1]
 

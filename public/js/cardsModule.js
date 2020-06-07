@@ -104,7 +104,7 @@ function CardsModule(dataService, eventService) {
 
 		while (processing) {
 			
-			if (text[pos] == '_') {
+			if (text[pos] == '_' && (pos == 0 || text[pos - 1] == ' ')) {
 
 				token = eatCursive(pos, text);
 
@@ -179,67 +179,69 @@ function CardsModule(dataService, eventService) {
 
 	function renderCards(){
 
-		var spaces = dataService.getSpaces();
+		var activeSpace = dataService.getActiveSpace();
 
-		spaces.forEach(function(space, index) {
+		var resultHtml = ''
+	  	var cardHtml = '';
 
-		  	var resultHtml = ''
-		  	var cardHtml = '';
+	  	var activeSpaceElem = dataService.getActiveSpaceElem();
 
-		  	var spaceElem = document.querySelector('.space-' + index);
+	  	console.log('renderCards activeSpace', activeSpace);
+	  	console.log('renderCards activeSpaceElem', activeSpaceElem);
 
-			if (space.cards) {
+		if (activeSpace.cards) {
 
-			    space.cards.forEach(function(card){
+		    activeSpace.cards.forEach(function(card){
 
-			      cardHtml = '<div class="card" ' + 
-			      'data-id="'+ card.id + '" '+
-			      'style="'+
-			      'left: ' + card.position.x + 'px;'+
-			      'top: ' + card.position.y + 'px;'+
-			      'width: ' + card.style.width + 'px;'+
-			      'height: ' + card.style.height + 'px;'+
-			      '" >';
+		     if(card.title === 'Аргумент') {
+		      console.log('renderCards card', card);
+		      }
 
-			      card.text_compiled = compileText(card.text);
+		      cardHtml = '<div class="card" ' + 
+		      'data-id="'+ card.id + '" '+
+		      'style="'+
+		      'left: ' + card.position.x + 'px;'+
+		      'top: ' + card.position.y + 'px;'+
+		      'width: ' + card.style.width + 'px;'+
+		      'height: ' + card.style.height + 'px;'+
+		      '" >';
 
-			      cardHtml = cardHtml + '<div class="card-content">'
-			      cardHtml = cardHtml + '<div class="draggable-corner" title="Переместить"></div>';
-			      cardHtml = cardHtml + '<div class="delete-corner" title="Удалить"></div>';
-			      cardHtml = cardHtml + '<div class="resize-corner" title="Растянуть"></div>';
-			      cardHtml = cardHtml + '<div class="edit-corner" title="Редактировать"></div>';
+		      card.text_compiled = compileText(card.text);
 
-			      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
-			      cardHtml = cardHtml + '<div class="card-text-compiled">' + card.text_compiled + '</div>';
-			      cardHtml = cardHtml + '<textarea class="card-text">' + card.text + '</textarea>';
+		      cardHtml = cardHtml + '<div class="card-content">'
+		      cardHtml = cardHtml + '<div class="draggable-corner" title="Переместить"></div>';
+		      cardHtml = cardHtml + '<div class="delete-corner" title="Удалить"></div>';
+		      cardHtml = cardHtml + '<div class="resize-corner" title="Растянуть"></div>';
+		      cardHtml = cardHtml + '<div class="edit-corner" title="Редактировать"></div>';
 
-			      cardHtml = cardHtml + '</div>'
-			      cardHtml = cardHtml + '</div>'
+		      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
+		      cardHtml = cardHtml + '<div class="card-text-compiled">' + card.text_compiled + '</div>';
+		      cardHtml = cardHtml + '<textarea class="card-text">' + card.text + '</textarea>';
 
-			      resultHtml = resultHtml + cardHtml;
+		      cardHtml = cardHtml + '</div>'
+		      cardHtml = cardHtml + '</div>'
+
+		      resultHtml = resultHtml + cardHtml;
 
 
+		    })
 
-			    })
+		}
 
-			}
+		var container = activeSpaceElem.querySelector('.space-content').querySelector('.cards-container');
 
-			var container = spaceElem.querySelector('.space-content').querySelector('.cards-container');
+		if(!container) {
 
-			if(!container) {
+			var elem = document.createElement('div')
+			elem.classList.add('cards-container')
+			activeSpaceElem.querySelector('.space-content').appendChild(elem)
 
-				var elem = document.createElement('div')
-				elem.classList.add('cards-container')
-				spaceElem.querySelector('.space-content').appendChild(elem)
+			container = activeSpaceElem.querySelector('.space-content').querySelector('.cards-container');
+		}
 
-				container = spaceElem.querySelector('.space-content').querySelector('.cards-container');
-			}
+		container.innerHTML = resultHtml
 
-			container.innerHTML = resultHtml
-
-			setCardsEventListeners(spaceElem);
-
-		  })
+		setCardsEventListeners(activeSpaceElem);
 
 	}
 
@@ -491,7 +493,10 @@ function CardsModule(dataService, eventService) {
 
 	  cardElem.querySelector('.card-text').addEventListener('blur', function(event) {
 
-	  	console.log("Textare blur");
+	  	console.log("Textare blur", card);
+
+	  	card.text = this.value;
+	  	dataService.setCardById(cardId, card);
 
 	  	cardElem.querySelector('.card-text-compiled').style.display = 'block';
 	  	cardElem.querySelector('.card-text').style.display = 'none';

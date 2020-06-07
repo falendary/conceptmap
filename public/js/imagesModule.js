@@ -1,6 +1,6 @@
-function TitlesModule(dataService, eventService) {
+function ImagesModule(dataService, eventService) {
 
-	function renderTitles(){
+	function render(){
 
 		var activeSpace = dataService.getActiveSpace();
 
@@ -9,11 +9,14 @@ function TitlesModule(dataService, eventService) {
 
 	  	var activeSpaceElem = dataService.getActiveSpaceElem();
 
-		if (activeSpace.titles) {
+	  	console.log('ImagesModule render activeSpace', activeSpace);
+	  	console.log('ImagesModule  render activeSpaceElem', activeSpaceElem);
 
-		    activeSpace.titles.forEach(function(item){
+		if (activeSpace.images) {
 
-		      itemHtml = '<div class="title" ' + 
+		    activeSpace.images.forEach(function(item){
+
+		      itemHtml = '<div class="image" ' + 
 		      'data-id="'+ item.id + '" '+
 		      'style="'+
 		      'left: ' + item.position.x + 'px;'+
@@ -22,41 +25,43 @@ function TitlesModule(dataService, eventService) {
 		      'height: ' + item.style.height + 'px;'+
 		      '" >';
 
-		      itemHtml = itemHtml + '<div class="title-content">'
+		      itemHtml = itemHtml + '<div class="image-content">'
 		      itemHtml = itemHtml + '<div class="draggable-corner" title="Переместить"></div>';
 		      itemHtml = itemHtml + '<div class="delete-corner" title="Удалить"></div>';
 		      itemHtml = itemHtml + '<div class="resize-corner" title="Растянуть"></div>';
+		      itemHtml = itemHtml + '<label for="img-input-' + item.id + '" class="edit-corner" title="Изменить"></label>';
+		      itemHtml = itemHtml + '<input class="image-file-input" id="img-input-' + item.id + '" type="file">';
 
-		      itemHtml = itemHtml + '<textarea class="title-text">' + item.text + '</textarea>';
-
+		      itemHtml = itemHtml + '<img src="' + item.source + '">';
 
 		      itemHtml = itemHtml + '</div>'
 		      itemHtml = itemHtml + '</div>'
 
 		      resultHtml = resultHtml + itemHtml;
 
+
 		    })
 
 		}
 
-		var container = activeSpaceElem.querySelector('.space-content').querySelector('.titles-container');
+		var container = activeSpaceElem.querySelector('.space-content').querySelector('.images-container');
 
 		if(!container) {
+
 			var elem = document.createElement('div')
-			elem.classList.add('titles-container')
+			elem.classList.add('images-container')
 			activeSpaceElem.querySelector('.space-content').appendChild(elem)
 
-			container = activeSpaceElem.querySelector('.space-content').querySelector('.titles-container');
+			container = activeSpaceElem.querySelector('.space-content').querySelector('.images-container');
 		}
 
 		container.innerHTML = resultHtml
 
-		setTitlesEventListeners(activeSpaceElem);
-
+		setItemsEventListeners(activeSpaceElem);
 
 	}
 
-	function setTitleDraggableListener(elem){
+	function setItemDraggableListener(elem){
 
 	  var startX;
 	  var startY;
@@ -72,8 +77,8 @@ function TitlesModule(dataService, eventService) {
 
 	  var mousePressed = false;
 
-	  var titleId = elem.dataset.id
-	  var title = dataService.getTitleById(titleId);
+	  var id = elem.dataset.id
+	  var item = dataService.getImageById(id);
 
 	  elem.addEventListener('mousedown', function(event){
 
@@ -124,8 +129,8 @@ function TitlesModule(dataService, eventService) {
 	      resultY = currentY + lastY - startY
 	      resultX = currentX + lastX - startX
 
-	      title.position.x = resultX;
-	      title.position.y = resultY;
+	      item.position.x = resultX;
+	      item.position.y = resultY;
 
 	      elem.style.top = resultY  + 'px';
 	      elem.style.left =   resultX + 'px';
@@ -137,7 +142,7 @@ function TitlesModule(dataService, eventService) {
 
 	}
 
-	function setTitleResizeListener(elem){
+	function setItemResizeListener(elem){
 
 	  var startX;
 	  var startY;
@@ -150,8 +155,8 @@ function TitlesModule(dataService, eventService) {
 
 	  var mousePressed = false;
 
-	  var titleId = elem.dataset.id
-	  var title = dataService.getTitleById(titleId);
+	  var id = elem.dataset.id
+	  var item = dataService.getImageById(id);
 
 	  var currentWidth;
 	  var currentHeight;
@@ -196,26 +201,20 @@ function TitlesModule(dataService, eventService) {
 	      resultWidth = currentWidth + lastX - startX 
 	      resultHeight = currentHeight + lastY - startY
 
-	      if (resultWidth > 180) {
+	      if (resultWidth > 100) {
 
-		      title.style.width = resultWidth;
+		      item.style.width = resultWidth;
 		      elem.style.width = resultWidth + 'px';
+		      item.style.height = resultWidth;
+	      	  elem.style.height =  resultWidth + 'px';
 		      
 	      } else {
 
- 			  title.style.width = 180;
-		      elem.style.width = '180px';
+ 			  item.style.width = 100;
+		      elem.style.width = '100px';
+		      item.style.height = 100;
+	          elem.style.height =  '100px';
 
-	      }
-
-	      if (resultHeight > 32) {
-
-	      	title.style.height = resultHeight;
-	      	elem.style.height =  resultHeight + 'px';
-
-	      } else {
-	      	title.style.height = 32;
-	      	elem.style.height =  '32px';
 	      }
 
 	     
@@ -225,69 +224,81 @@ function TitlesModule(dataService, eventService) {
 
 	}
 
-	function setTitleDeleteListener(elem) {
+	function setItemDeleteListener(elem) {
 
-	  var titleId = elem.dataset.id
-	  var title = dataService.getTitleById(titleId);
+	  var id = elem.dataset.id
+	  var item = dataService.getImageById(id);
 
 	  elem.addEventListener('click', function(event) {
 
 	  	if (event.target.classList.contains('delete-corner')){
 
-	  		dataService.deleteTitleById(titleId);
+	  		dataService.deleteImageById(id);
 
-	  		eventService.dispatchEvent(EVENTS.RENDER_TITLES);
+	  		eventService.dispatchEvent(EVENTS.RENDER_IMAGES);
 	  	}
 
 	  })
 
 	}
 
-	function setTitleValueChangeListener(elem) {
+	function setItemFileInputChangeListener(elem) {
 
-	  var titleId = elem.dataset.id
-	  var title = dataService.getTitleById(titleId);
+	  var id = elem.dataset.id
+	  var item = dataService.getImageById(id);
 
-	  elem.querySelector('.title-text').addEventListener('focus', function(event){
-	  	activeSpace = dataService.getActiveSpace();
-	  })
+	  var input = elem.querySelector('.image-file-input')
 
-	  elem.querySelector('.title-text').addEventListener('change', function(event) {
+	  input.addEventListener('change', function(event) {
 
-	  	title.text = this.value;
+	  	console.log('file change', event);
 
-	  	if(!title.text) {
-	  		elem.classList.add('empty-title')
-	  	} else {
-	  		elem.classList.remove('empty-title')
-	  	}
+	  	var formData = new FormData();
 
-	  	dataService.setTitleById(titleId, title);
+	  	formData.append('image', input.files[0])
+	  	formData.append('spaceId', activeSpace.id)
+
+	  	fetch('/api/upload', {
+	  		method: "POST",
+	  		body: formData
+	  	}).then(function(data){
+	  		return data.json()
+	  	}).then(function(data){
+
+	  		item.source = data.source
+
+	  		dataService.setImageById(item.id, item);
+
+	  		eventService.dispatchEvent(EVENTS.RENDER_IMAGES);
+
+	  	})
 
 	  })
 
 	}
 
-	function setTitlesEventListeners(spaceElem){
+	function setItemsEventListeners(spaceElem){
 
-	  var elements = spaceElem.querySelectorAll('.title');
+	  var elements = spaceElem.querySelectorAll('.image');
+
+	  var i;
 
 	  elements.forEach(function(elem) {
 
-	    setTitleDraggableListener(elem);
-	    setTitleDeleteListener(elem);
-	    setTitleValueChangeListener(elem);
-	    setTitleResizeListener(elem);
-
+	    setItemDraggableListener(elem);
+	    setItemResizeListener(elem);
+	    setItemDeleteListener(elem);
+	    setItemFileInputChangeListener(elem);
+	
 	  })
 
 	}
 
 	function setEventListeners(){
 
-		eventService.addEventListener(EVENTS.RENDER_TITLES, function(){
+		eventService.addEventListener(EVENTS.RENDER_IMAGES, function(){
 
-			renderTitles();
+			render();
 
 		})
 

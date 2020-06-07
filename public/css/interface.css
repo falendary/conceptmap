@@ -3,19 +3,32 @@
 }
 
 .to-main-menu {
-     bottom: 16px;
-    left: 50%;
-    margin-left: 250px;
-    height: 60px;
-    width: 100px;
+    top: 8px;
+    left: 8px;
+    height: 32px;
+    width: 32px;
+    background: #fff;
+    border: 1px solid #000;
+    outline: none;
+}
+.to-main-menu:hover {
+    background: #ddd;
 }
 
 .to-center-button {
-    bottom: 16px;
-    left: 50%;
-    margin-left: 32px;
-    height: 60px;
-    width: 60px;
+    bottom: 8px;
+    left: 136px;
+    height: 24px;
+    width: 24px;
+    background: #fff;
+    border: 1px solid #000;
+    text-align: center;
+    line-height: 1.5;
+    outline: none;
+}
+
+.to-center-button:hover {
+    background: #ddd;
 }
 
 .reset-zoom-button {
@@ -37,6 +50,14 @@
 .add-title-button {
     bottom: 16px;
     left: 50%;
+    margin-left: -280px;
+    height: 60px;
+    width: 80px;
+}
+
+.add-image-button {
+    bottom: 16px;
+    left: 50%;
     margin-left: -190px;
     height: 60px;
     width: 80px;
@@ -46,7 +67,7 @@
 
     bottom: 16px;
     left: 50%;
-    margin-left: -280px;
+    margin-left: -370px;
     height: 60px;
     width: 80px;
 }
@@ -55,7 +76,7 @@
 
     bottom: 16px;
     left: 50%;
-    margin-left: -370px;
+    margin-left: -460px;
     height: 60px;
     width: 80px;
 
@@ -75,8 +96,15 @@
 
 .user-position {
     user-select: none;
+    height: 24px;
     bottom: 8px;
     left: 8px;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #000;
+    padding:  0 8px;
+    width: 124px;
+    text-align: center;
 }
 
 
@@ -87,8 +115,8 @@
 
 .search-box {
 
-    top: 16px;
-    left: 16px;
+    top: 8px;
+    left: 48px;
 
 }
 

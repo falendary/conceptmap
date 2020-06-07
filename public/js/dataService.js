@@ -52,12 +52,22 @@ function DataService() {
 
     var result = null;
 
-    for(var i = 0; i < state.activeSpace.cards.length; i = i + 1) {
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
 
-      if (id == state.activeSpace.cards[i].id) {
-        result = state.activeSpace.cards[i];
-        break;
-      } 
+      var space = state.spaces[i];
+
+      for(var x = 0; x < space.cards.length; x = x + 1) {
+
+        var card = space.cards[x]
+
+        if (id == card.id) {
+          
+           result = card;
+
+           break;
+        } 
+
+      }
 
     }
 
@@ -67,32 +77,48 @@ function DataService() {
 
   function deleteCardById(id) {
 
-    for(var i = 0; i < state.activeSpace.cards.length; i = i + 1) {
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
 
-      if (id == state.activeSpace.cards[i].id) {
-        
-        state.activeSpace.cards.splice(i, 1)
+      var space = state.spaces[i];
 
-        break;
+      for(var x = 0; x < space.cards.length; x = x + 1) {
 
-      } 
+        var card = space.cards[x]
+
+        if (id == card.id) {
+
+          space.cards.splice(x, 1)
+          break;
+
+        } 
+
+      }
 
     }
 
+
   }
 
-  function setCardById(id, card) {
+  function setCardById(id, data) {
 
-    for(var i = 0; i < state.activeSpace.cards.length; i = i + 1) {
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
 
-      if (id == state.activeSpace.cards[i].id) {
-        
-        state.activeSpace.cards.splice(i, 1)
-        state.activeSpace.cards.push(Object.assign({}, card))
+      var space = state.spaces[i];
 
-        break;
+      for(var x = 0; x < space.cards.length; x = x + 1) {
 
-      } 
+        var card = space.cards[x]
+
+        if (id == card.id) {
+          
+          space.cards.splice(x, 1)
+          space.cards.push(Object.assign({}, data))
+
+          break;
+
+        } 
+
+      }
 
     }
 
@@ -110,12 +136,23 @@ function DataService() {
 
     var result = null;
 
-    for(var i = 0; i < state.activeSpace.titles.length; i = i + 1) {
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
 
-      if (id == state.activeSpace.titles[i].id) {
-        result = state.activeSpace.titles[i];
-        break;
-      } 
+      var space = state.spaces[i];
+
+      for(var x = 0; x < space.titles.length; x = x + 1) {
+
+        var title = space.titles[x];
+
+        if (id == title.id) {
+          
+          result = title;
+
+          break;
+
+        } 
+
+      }
 
     }
 
@@ -125,32 +162,125 @@ function DataService() {
 
   function deleteTitleById(id) {
 
-    for(var i = 0; i < state.activeSpace.titles.length; i = i + 1) {
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
 
-      if (id == state.activeSpace.titles[i].id) {
-        
-        state.activeSpace.titles.splice(i, 1)
+      var space = state.spaces[i];
 
-        break;
+      for(var x = 0; x < space.titles.length; x = x + 1) {
 
-      } 
+        var title = space.titles[x];
+
+        if (id == title.id) {
+          
+          space.titles.splice(x, 1);
+
+          break;
+
+        } 
+
+      }
 
     }
 
   }
 
-  function setTitleById(id, card) {
+  function setTitleById(id, data) {
 
-    for(var i = 0; i < state.activeSpace.titles.length; i = i + 1) {
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
 
-      if (id == state.activeSpace.titles[i].id) {
-        
-        state.activeSpace.titles.splice(i, 1)
-        state.activeSpace.titles.push(Object.assign({}, card))
+      var space = state.spaces[i];
 
-        break;
+      for(var x = 0; x < space.titles.length; x = x + 1) {
 
-      } 
+        var title = space.titles[x];
+
+        if (id == title.id) {
+          
+          space.titles.splice(x, 1);
+          space.titles.push(Object.assign({}, data));
+
+          break;
+
+        } 
+
+      }
+
+    }
+
+  }
+
+  function getImageById(id) {
+
+    var result = null;
+
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
+
+      var space = state.spaces[i];
+
+      for(var x = 0; x < space.images.length; x = x + 1) {
+
+        var image = space.images[x];
+
+        if (id == image.id) {
+          
+          result = image;
+
+          break;
+
+        } 
+
+      }
+
+    }
+
+    return result;
+
+  }
+
+  function deleteImageById(id) {
+
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
+
+      var space = state.spaces[i];
+
+      for(var x = 0; x < space.images.length; x = x + 1) {
+
+        var image = space.images[x];
+
+        if (id == image.id) {
+          
+          space.images.splice(x, 1);
+
+          break;
+
+        } 
+
+      }
+
+    }
+
+  }
+
+  function setImageById(id, data) {
+
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
+
+      var space = state.spaces[i];
+
+      for(var x = 0; x < space.images.length; x = x + 1) {
+
+        var image = space.images[x];
+
+        if (id == image.id) {
+          
+          space.images.splice(x, 1);
+          space.images.push(Object.assign({}, data));
+
+          break;
+
+        } 
+
+      }
 
     }
 
@@ -181,7 +311,11 @@ function DataService() {
 
     getTitleById: getTitleById,
     deleteTitleById: deleteTitleById,
-    setTitleById: setTitleById
+    setTitleById: setTitleById,
+
+    getImageById: getImageById,
+    deleteImageById: deleteImageById,
+    setImageById: setImageById
 
   }
 
