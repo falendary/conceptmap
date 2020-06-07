@@ -302,6 +302,8 @@ function init(){
 
       fixDataStructure()
       
+      dataService.clearActiveFromCards();
+
       eventService.dispatchEvent(EVENTS.RENDER_CARDS);
       eventService.dispatchEvent(EVENTS.RENDER_TITLES);
       eventService.dispatchEvent(EVENTS.RENDER_IMAGES);
@@ -435,6 +437,18 @@ function handleHashUrl(dataService, eventService, hash) {
 
         activeSpaceElem.style.left = startLeft + diffLeft + halfScreenWidth - halfCardWidth + 'px';
         activeSpaceElem.style.top = startTop + diffTop + halfScreenHeight - halfCardHeight + 'px';
+
+        dataService.clearActiveFromCards();
+
+        resultCard.active = true;
+
+        dataService.setCardById(resultCard.id, resultCard);
+
+        eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+
+      } else {
+
+        toastr.error('Такой карточки не существует')
 
       }
 

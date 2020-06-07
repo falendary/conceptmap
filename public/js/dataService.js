@@ -124,6 +124,24 @@ function DataService() {
 
   }
 
+  function clearActiveFromCards() {
+
+    for (var i = 0; i < state.spaces.length; i = i + 1) {
+
+      var space = state.spaces[i];
+
+      for(var x = 0; x < space.cards.length; x = x + 1) {
+
+        var card = space.cards[x]
+
+        card.active = false;
+
+      }
+
+    }
+
+  }
+
   function setCurrentScale(scale){
     state.scale = scale;
   }
@@ -302,6 +320,7 @@ function DataService() {
     setActiveSpaceElem: setActiveSpaceElem,
     getActiveSpaceElem: getActiveSpaceElem,
 
+    clearActiveFromCards: clearActiveFromCards,
     getCardById: getCardById,
     setCardById: setCardById,
     deleteCardById: deleteCardById,

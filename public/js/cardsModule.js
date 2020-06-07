@@ -193,11 +193,13 @@ function CardsModule(dataService, eventService) {
 
 		    activeSpace.cards.forEach(function(card){
 
-		     if(card.title === 'Аргумент') {
-		      console.log('renderCards card', card);
+		      var active = '';
+
+		      if(card.active) {
+		      	active = 'active'
 		      }
 
-		      cardHtml = '<div class="card" ' + 
+		      cardHtml = '<div class="card '+active+'" ' + 
 		      'data-id="'+ card.id + '" '+
 		      'style="'+
 		      'left: ' + card.position.x + 'px;'+

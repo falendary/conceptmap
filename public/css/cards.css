@@ -12,6 +12,10 @@
     padding: 16px;
 }
 
+.card.active {
+    box-shadow: 0 0 12px cornflowerblue;
+}
+
 .draggable-corner {
     position: absolute;
     left: 0;
