@@ -195,6 +195,37 @@
     outline: none;
 }
 
+.search-box-autocomplete {
+    background: #fff;
+    border: 1px solid;
+    margin-top: 2px;
+    position: absolute;
+    width: 400px;
+    display: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+
+a.search-box-option {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: #000;
+    text-decoration: none;
+    padding: 4px 8px;
+}
+a.search-box-option:hover {
+    background: #ddd;
+}
+.search-box-space-name {
+    color: mediumvioletred;
+}
+
+.search-box-autocomplete.active {
+    display: block;
+}
+
 .search-box-button {
     height: 32px;
     background: #fff;

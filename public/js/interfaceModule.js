@@ -57,6 +57,12 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
+    eventService.addEventListener(EVENTS.CLEAR_SEARCH_AUTOCOMPLETE, function(){
+
+      clearSearchBoxAutocomplete()
+
+    })
+
 
   }
 
@@ -91,6 +97,7 @@ function InterfaceModule(dataService, eventService) {
   
         eventService.dispatchEvent(EVENTS.RENDER_CARDS);
         eventService.dispatchEvent(EVENTS.RENDER_TITLES);
+        eventService.dispatchEvent(EVENTS.RENDER_IMAGES);
 
         renderSpacesTabs();
 
@@ -148,9 +155,134 @@ function InterfaceModule(dataService, eventService) {
 
   }
 
+  function clearSearchBoxAutocomplete() {
+
+    var searchBoxAutocomplete = document.querySelector('.search-box-autocomplete');
+    var searchBoxInput = document.querySelector('.search-box-input');
+
+    searchBoxInput.blur();
+    // searchBoxInput.value = '';
+    searchBoxAutocomplete.classList.remove('active');
+    searchBoxAutocomplete.innerHTML = '';
+
+  }
+
+  function drawSearchboxAutocomplete(searchBoxAutocomplete, searchBoxInput) {
+
+    console.log("Redraw autocomplete")
+
+
+    var resultHtml = '';
+    var activeSpace = dataService.getActiveSpace();
+
+    var spaces = dataService.getSpaces();
+    var spacesLength = spaces.length;
+    var space;
+    var card;
+    var cardsLength;
+    var i, x;
+
+    var userInput = searchBoxInput.value;
+
+    var matches = [];
+    var limit = 5;
+
+    console.log('userInput', userInput);
+
+    if (userInput) {
+      for (i =0; i < spacesLength; i = i + 1) {
+
+        space = spaces[i];
+
+        cardsLength = space.cards.length;
+
+        for (x = 0; x < cardsLength; x = x + 1) {
+
+          card = space.cards[x];
+
+
+          if (card.title.toLowerCase().indexOf(userInput.toLowerCase()) !== -1) {
+
+            matches.push({
+
+              space: space,
+              card: card
+
+            });
+
+          }
+
+          if (matches.length >= limit) {
+            break;
+          }
+
+
+        }
+
+        if (matches.length >= limit) {
+          break;
+        }
+
+      }
+    }
+
+    console.log('matches', matches);
+
+    if (matches.length) {
+
+      if(!searchBoxAutocomplete.classList.contains('active')) {
+        searchBoxAutocomplete.classList.add('active');
+      }
+
+    
+
+    var rowHtml;
+
+    for (i = 0; i < matches.length; i = i + 1) {
+
+      space = matches[i].space;
+      card = matches[i].card;
+
+      if (activeSpace.name == space.name) {
+
+        rowHtml = '<a class="search-box-option" href="map.html#/goto=' + card.title + '">';
+
+        rowHtml = rowHtml + card.title;
+
+      } else {
+
+        rowHtml = '<a class="search-box-option" href="map.html#/goto=' + space.name + '/' + card.title + '">';
+
+        rowHtml = rowHtml + '<span class="search-box-space-name">' + space.name +'</span> / ' + card.title;
+
+      }
+
+      rowHtml = rowHtml + '</a>';
+
+      resultHtml = resultHtml + rowHtml
+
+    }
+
+
+    searchBoxAutocomplete.innerHTML = resultHtml
+
+    } else {
+
+      searchBoxAutocomplete.classList.remove('active');
+      searchBoxAutocomplete.innerHTML = '';
+
+    }
+
+  }
+
   function handleSearchBox() {
 
-    document.querySelector('.search-box-button').addEventListener('click', function(event) {
+    var searchBoxContainer = document.querySelector('.search-box');
+    var searchBoxInput = document.querySelector('.search-box-input');
+    var searchBoxButton = document.querySelector('.search-box-button');
+    var searchBoxAutocomplete = document.querySelector('.search-box-autocomplete');
+
+    searchBoxButton.addEventListener('click', function(event) {
 
       var input = document.querySelector('.search-box-input');
 
@@ -165,21 +297,37 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
-    document.querySelector('.search-box-input').addEventListener('keydown', function(event){
+    searchBoxInput.addEventListener('keydown', function(event){
 
       if (event.keyCode == 13) {
 
-        var input = document.querySelector('.search-box-input');
+        if (searchBoxInput.value && searchBoxInput.value.length) {
+        
+          goTo(searchBoxInput.value);
 
-        var spaceName = activeSpace.name
+        }
 
-        var link = spaceName + '/' + input.value
-
-        goTo(link)
-
-        input.value = '';
+        // searchBoxInput.value = '';
 
       }
+
+      if (event.keyCode == 9) {
+
+        var options = document.querySelectorAll('.search-box-option');
+
+        if (options.length) {
+
+          searchBoxInput.value = decodeURI(options[0].href.split('goto=')[1]);
+
+        }
+
+      }
+
+    })
+
+    searchBoxInput.addEventListener('keyup', function(event) {
+
+       drawSearchboxAutocomplete(searchBoxAutocomplete, searchBoxInput)
 
     })
 
@@ -201,6 +349,8 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.to-center-button').addEventListener('click', function(event){
 
+      activeSpaceElem = dataService.getActiveSpaceElem();
+
       var halfScreenWidth = document.body.clientWidth / 2;
       var halfScreenHeight = document.body.clientHeight / 2;
 
@@ -209,6 +359,9 @@ function InterfaceModule(dataService, eventService) {
 
       activeSpaceElem.style.left = -constants.OFFSET_LEFT + halfScreenWidth + 'px';
       activeSpaceElem.style.top = -constants.OFFSET_TOP + halfScreenHeight + 'px';
+
+      console.log('to center left '  + activeSpaceElem.style.left)
+      console.log('to center top ' + activeSpaceElem.style.top)
 
       window.location.hash = '#/'
 
@@ -422,9 +575,22 @@ function InterfaceModule(dataService, eventService) {
           elem.focus()
        }
 
+    })
 
+    document.body.addEventListener('click', function(){
+      dataService.clearActiveFromCards();
+      eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+    })
 
+    document.body.addEventListener('keydown', function(event){
 
+      if((event.ctrlKey || event.metaKey) && event.which == 83) {
+            // Save Function
+            event.preventDefault();
+            saveProject();
+
+        }
+    
     })
 
 

@@ -16,6 +16,14 @@
     box-shadow: 0 0 12px cornflowerblue;
 }
 
+.card.empty-content-card {
+    opacity: .3
+}
+
+.card.empty-content-card:hover {
+    opacity: 1;
+}
+
 .draggable-corner {
     position: absolute;
     left: 0;

@@ -194,12 +194,17 @@ function CardsModule(dataService, eventService) {
 		    activeSpace.cards.forEach(function(card){
 
 		      var active = '';
+		      var emptyContent = '';
+
+		      if (!card.text.length) {
+		      	emptyContent = 'empty-content-card'
+		      }
 
 		      if(card.active) {
 		      	active = 'active'
 		      }
 
-		      cardHtml = '<div class="card '+active+'" ' + 
+		      cardHtml = '<div class="card ' + active+  ' ' + emptyContent +'" ' + 
 		      'data-id="'+ card.id + '" '+
 		      'style="'+
 		      'left: ' + card.position.x + 'px;'+

@@ -467,6 +467,9 @@ window.onhashchange = function(event){
   var hashUrl = event.newURL.split('#/')[1]
 
   handleHashUrl(dataService, eventService, hashUrl)
+  
+
+  eventService.dispatchEvent(EVENTS.CLEAR_SEARCH_AUTOCOMPLETE)
       
 }
 
