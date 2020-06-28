@@ -74,10 +74,8 @@ function initGlobalDragListener() {
       var diffTop = lastY - startY;
       var diffLeft = lastX - startX;
 
-      var resultTop = currentY + diffTop
-      var resultLeft = currentX + diffLeft
-
-      console.log('currentScale', currentScale);
+      var resultTop = currentY + diffTop / currentScale
+      var resultLeft = currentX + diffLeft / currentScale
 
       activeSpaceElem.style.top = resultTop + 'px';
       activeSpaceElem.style.left = resultLeft + 'px';
@@ -93,53 +91,59 @@ function initGlobalZoomListener(){
 
    $("body").on("mousewheel DOMMouseScroll", function (e) {
 
-    var delta = e.delta || e.originalEvent.wheelDelta;
-    var zoomOut;
-    if (delta === undefined) {
-      //we are on firefox
-      delta = e.originalEvent.detail;
-      zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-      zoomOut = !zoomOut;
-    } else {
-      zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-    }
-    var touchX = e.type === 'touchend' ? e.changedTouches[0].pageX : e.pageX;
-    var touchY = e.type === 'touchend' ? e.changedTouches[0].pageY : e.pageY;
-    
-    var translateX, translateY;
+      if (!window.isDragging) {
 
-    if(zoomOut){
-      // we are zooming out
-      scale = scale - 0.01;
-
-      if (scale < minScale) {
-        scale = minScale;
+      var delta = e.delta || e.originalEvent.wheelDelta;
+      var zoomOut;
+      if (delta === undefined) {
+        //we are on firefox
+        delta = e.originalEvent.detail;
+        zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+        zoomOut = !zoomOut;
+      } else {
+        zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
       }
+      var touchX = e.type === 'touchend' ? e.changedTouches[0].pageX : e.pageX;
+      var touchY = e.type === 'touchend' ? e.changedTouches[0].pageY : e.pageY;
       
-      var offsetWidth = $(".zoom-wrap")[0].offsetWidth;
-      var offsetHeight = $(".zoom-wrap")[0].offsetHeight;
+      var translateX, translateY;
 
-      $(".zoom-wrap")
-        .css("transform-origin", touchX + 'px ' + touchY + 'px')
-        .css("transform", 'scale(' + scale + ')');
-      
-    } else {
-      // we are zooming in
-      scale = scale + 0.01;
+      if(zoomOut){
+        // we are zooming out
+        scale = scale - 0.01;
 
-      if (scale > maxScale) {
-        scale = maxScale;
-      }
-      
-      var offsetWidth = $(".zoom-wrap")[0].offsetWidth;
-      var offsetHeight = $(".zoom-wrap")[0].offsetHeight;
+        if (scale < minScale) {
+          scale = minScale;
+        }
+        
+        var offsetWidth = $(".zoom-wrap")[0].offsetWidth;
+        var offsetHeight = $(".zoom-wrap")[0].offsetHeight;
 
-      $(".zoom-wrap")
-        .css("transform-origin", touchX + 'px ' + touchY + 'px')
-        .css("transform", 'scale(' + scale + ')');
+        $(".zoom-wrap")
+          .css("transform-origin", touchX + 'px ' + touchY + 'px')
+          .css("transform", 'scale(' + scale + ')');
+        
+      } else {
+        // we are zooming in
+        scale = scale + 0.01;
+
+        if (scale > maxScale) {
+          scale = maxScale;
+        }
+        
+        var offsetWidth = $(".zoom-wrap")[0].offsetWidth;
+        var offsetHeight = $(".zoom-wrap")[0].offsetHeight;
+
+        $(".zoom-wrap")
+          .css("transform-origin", touchX + 'px ' + touchY + 'px')
+          .css("transform", 'scale(' + scale + ')');
+       }
+
+       dataService.setCurrentScale(scale);
+
+       eventService.dispatchEvent(EVENTS.SCALE_CHANGE)
+
      }
-
-     dataService.setCurrentScale(scale);
 
   });
 

@@ -76,6 +76,9 @@ function ImagesModule(dataService, eventService) {
 	  var currentY;
 	  var currentX;
 
+	  var diffTop;
+	  var diffLeft;
+
 	  var resultY;
 	  var resultX;
 
@@ -130,8 +133,11 @@ function ImagesModule(dataService, eventService) {
 	          currentX = 0
 	      }
 
-	      resultY = currentY + lastY - startY
-	      resultX = currentX + lastX - startX
+	      diffTop = lastY - startY;
+          diffLeft = lastX - startX;
+
+	      resultY = currentY + diffTop / currentScale;
+	      resultX = currentX + diffLeft / currentScale;
 
 	      item.position.x = resultX;
 	      item.position.y = resultY;

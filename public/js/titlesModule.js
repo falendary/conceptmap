@@ -70,6 +70,9 @@ function TitlesModule(dataService, eventService) {
 	  var resultY;
 	  var resultX;
 
+	  var diffTop;
+	  var diffLeft;
+
 	  var mousePressed = false;
 
 	  var titleId = elem.dataset.id
@@ -121,8 +124,11 @@ function TitlesModule(dataService, eventService) {
 	          currentX = 0
 	      }
 
-	      resultY = currentY + lastY - startY
-	      resultX = currentX + lastX - startX
+	      diffTop = lastY - startY;
+          diffLeft = lastX - startX;
+
+	      resultY = currentY + diffTop / currentScale;
+	      resultX = currentX + diffLeft / currentScale;
 
 	      title.position.x = resultX;
 	      title.position.y = resultY;

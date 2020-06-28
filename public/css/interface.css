@@ -26,7 +26,7 @@
 
 .to-center-button {
     bottom: 8px;
-    left: 136px;
+    left: 145px;
     height: 24px;
     width: 24px;
     background: #fff;
@@ -43,10 +43,19 @@
 
 .reset-zoom-button {
     bottom: 8px;
-    left: 164px;
+    left: 172px;
     height:24px;
-    width: 24px;
+    width: 55px;
     font-size: 10px;
+}
+.reset-zoom-button i {
+
+    margin-right: 4px;
+}
+
+.reset-zoom-button .scale {
+    width: 24px;
+    display: inline-block;
 }
 
 .interface-button {
@@ -123,7 +132,7 @@
     background: #fff;
     border: 1px solid #000;
     padding:  0 8px;
-    width: 124px;
+    width: 130px;
     text-align: center;
 }
 

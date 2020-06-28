@@ -64,6 +64,15 @@ function InterfaceModule(dataService, eventService) {
     })
 
 
+    eventService.addEventListener(EVENTS.SCALE_CHANGE, function(){
+
+      var currentScale = dataService.getCurrentScale()
+
+      document.querySelector('.reset-zoom-button .scale').innerHTML = Math.floor(currentScale * 100) + '%';
+
+    })
+
+
   }
 
   function handleSpaceTabs() {
@@ -507,6 +516,10 @@ function InterfaceModule(dataService, eventService) {
         .css("transform-origin", "inital")
         .css("transform", "scale(1)");
 
+      dataService.setCurrentScale(1);
+
+      eventService.dispatchEvent(EVENTS.SCALE_CHANGE)
+
     })
 
     document.querySelector('.to-main-menu').addEventListener('click', function(event){
@@ -577,9 +590,15 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
-    document.body.addEventListener('click', function(){
-      dataService.clearActiveFromCards();
-      eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+    document.body.addEventListener('click', function(event){
+
+      if (event.target.classList.contains('space-content')) {
+
+        dataService.clearActiveFromCards();
+        eventService.dispatchEvent(EVENTS.RENDER_CARDS);
+
+      }
+      
     })
 
     document.body.addEventListener('keydown', function(event){

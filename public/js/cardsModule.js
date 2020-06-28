@@ -266,6 +266,9 @@ function CardsModule(dataService, eventService) {
 	  var resultY;
 	  var resultX;
 
+	  var diffTop;
+	  var diffLeft;
+
 	  var mousePressed = false;
 
 	  var cardId = cardElem.dataset.id
@@ -295,6 +298,8 @@ function CardsModule(dataService, eventService) {
 
 	    mousePressed = false;
 
+	    window.isDragging = false;
+
 	  })
 
 	  document.body.addEventListener('mousemove', function(event) {
@@ -302,6 +307,10 @@ function CardsModule(dataService, eventService) {
 	  	// console.log('mousePressed', mousePressed);
 
 	    if (mousePressed) {
+
+	      currentScale = dataService.getCurrentScale();
+
+	      window.isDragging = true;
 
 	      // console.log('mousemove event', event);
 
@@ -317,8 +326,11 @@ function CardsModule(dataService, eventService) {
 	          currentX = 0
 	      }
 
-	      resultY = currentY + lastY - startY
-	      resultX = currentX + lastX - startX
+	      diffTop = lastY - startY;
+          diffLeft = lastX - startX;
+
+	      resultY = currentY + diffTop / currentScale;
+	      resultX = currentX + diffLeft / currentScale;
 
 	      card.position.x = resultX;
 	      card.position.y = resultY;
@@ -515,21 +527,21 @@ function CardsModule(dataService, eventService) {
 
 	}
 
-	function setCardEditClickListener(cardElem) {
+	function setCardEditClickListener(elem) {
 
-	  var cardId = cardElem.dataset.id
+	  var cardId = elem.dataset.id
 	  var card = dataService.getCardById(cardId);
 
-	  cardElem.querySelector('.edit-corner').addEventListener('click', function(event) {
+	  elem.querySelector('.edit-corner').addEventListener('click', function(event) {
 
 	  	console.log('click compiled text event', event)
 
 	  	if (event.target.tagName != 'A') {
 
-		  	cardElem.querySelector('.card-text-compiled').style.display = 'none';
-		  	cardElem.querySelector('.card-text').style.display = 'block';
+		  	elem.querySelector('.card-text-compiled').style.display = 'none';
+		  	elem.querySelector('.card-text').style.display = 'block';
 
-		  	cardElem.querySelector('.card-text').focus();
+		  	elem.querySelector('.card-text').focus();
 	  	
 	  	}
 
@@ -541,18 +553,15 @@ function CardsModule(dataService, eventService) {
 
 	  var elements = spaceElem.querySelectorAll('.card');
 
-	  var i;
-	  var cardElem;
+	  elements.forEach(function(elem) {
 
-	  elements.forEach(function(cardElem) {
-
-	    setCardDraggableListener(cardElem);
-	    setCardDeleteListener(cardElem);
-	    setCardTitleChangeListener(cardElem);
-	    setCardTextChangeListener(cardElem);
-	    setCardResizeListener(cardElem);
-	    setCardEditClickListener(cardElem);
-	    setCardTextareaBlurListener(cardElem);
+	    setCardDraggableListener(elem);
+	    setCardDeleteListener(elem);
+	    setCardTitleChangeListener(elem);
+	    setCardTextChangeListener(elem);
+	    setCardResizeListener(elem);
+	    setCardEditClickListener(elem);
+	    setCardTextareaBlurListener(elem);
 
 	  })
 
