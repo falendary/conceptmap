@@ -468,11 +468,12 @@ function handleHashUrl(dataService, eventService, hash) {
 
 window.onhashchange = function(event){
 
+  eventService.dispatchEvent(EVENTS.RESET_SCALE);
+
   var hashUrl = event.newURL.split('#/')[1]
 
   handleHashUrl(dataService, eventService, hashUrl)
   
-
   eventService.dispatchEvent(EVENTS.CLEAR_SEARCH_AUTOCOMPLETE)
       
 }

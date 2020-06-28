@@ -43,6 +43,18 @@ function InterfaceModule(dataService, eventService) {
 
   }
 
+  function resetScale(){
+
+    $(".zoom-wrap")
+        .css("transform-origin", "inital")
+        .css("transform", "scale(1)");
+
+      dataService.setCurrentScale(1);
+
+      eventService.dispatchEvent(EVENTS.SCALE_CHANGE)
+
+  }
+
   function setEventListeners(){
 
     eventService.addEventListener(EVENTS.RENDER_SPACES_TABS, function(){
@@ -69,6 +81,14 @@ function InterfaceModule(dataService, eventService) {
       var currentScale = dataService.getCurrentScale()
 
       document.querySelector('.reset-zoom-button .scale').innerHTML = Math.floor(currentScale * 100) + '%';
+
+    })
+
+    eventService.addEventListener(EVENTS.RESET_SCALE, function(){
+
+      console.log("Reset scale?")
+
+      resetScale();
 
     })
 
@@ -178,7 +198,7 @@ function InterfaceModule(dataService, eventService) {
 
   function drawSearchboxAutocomplete(searchBoxAutocomplete, searchBoxInput) {
 
-    console.log("Redraw autocomplete")
+    // console.log("Redraw autocomplete")
 
 
     var resultHtml = '';
@@ -196,7 +216,7 @@ function InterfaceModule(dataService, eventService) {
     var matches = [];
     var limit = 5;
 
-    console.log('userInput', userInput);
+    // console.log('userInput', userInput);
 
     if (userInput) {
       for (i =0; i < spacesLength; i = i + 1) {
@@ -235,7 +255,7 @@ function InterfaceModule(dataService, eventService) {
       }
     }
 
-    console.log('matches', matches);
+    // console.log('matches', matches);
 
     if (matches.length) {
 
@@ -302,7 +322,6 @@ function InterfaceModule(dataService, eventService) {
       goTo(link)
 
       input.value = '';
-      
 
     })
 
@@ -512,13 +531,7 @@ function InterfaceModule(dataService, eventService) {
 
     document.querySelector('.reset-zoom-button').addEventListener('click', function(event){
 
-      $(".zoom-wrap")
-        .css("transform-origin", "inital")
-        .css("transform", "scale(1)");
-
-      dataService.setCurrentScale(1);
-
-      eventService.dispatchEvent(EVENTS.SCALE_CHANGE)
+      resetScale();
 
     })
 
