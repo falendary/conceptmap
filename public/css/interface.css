@@ -142,12 +142,6 @@
     z-index: 2;
 }
 
-.search-box {
-
-    top: 8px;
-    left: 48px;
-
-}
 
 .spaces-box {
     top: 8px;
@@ -191,6 +185,11 @@
 
 .space-button.active:hover {
     background: lightgreen;
+}
+
+.search-box {
+    top: 8px;
+    left: 48px;
 }
 
 .search-box input {
@@ -246,5 +245,27 @@ a.search-box-option:hover {
 }
 
 .search-box-button:hover {
+    background: #ddd;
+}
+
+.search-box:hover .search-box-clear-button {
+    display: block;
+}
+
+.search-box-clear-button {
+    display: none;
+    position: absolute;
+    border: 1px solid #000;
+    background: #fff;
+    right: 84px;
+    top: 7px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    text-align: center;
+    padding: 0;
+}
+.search-box-clear-button:hover {
     background: #ddd;
 }

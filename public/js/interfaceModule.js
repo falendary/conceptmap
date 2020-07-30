@@ -38,7 +38,7 @@ function InterfaceModule(dataService, eventService) {
 
     var date = new Date().toISOString().split('T')[0]
 
-    downloadFile(JSON.stringify(body), 'application/json', 'Concept Map ' + date + '.json')
+    downloadFile(JSON.stringify(body), 'application/json', body.name + ' ' + date + '.json')
 
 
   }
@@ -310,18 +310,17 @@ function InterfaceModule(dataService, eventService) {
     var searchBoxInput = document.querySelector('.search-box-input');
     var searchBoxButton = document.querySelector('.search-box-button');
     var searchBoxAutocomplete = document.querySelector('.search-box-autocomplete');
+    var searchBoxClearButton = document.querySelector('.search-box-clear-button')
 
     searchBoxButton.addEventListener('click', function(event) {
 
-      var input = document.querySelector('.search-box-input');
-
       var spaceName = activeSpace.name
 
-      var link = spaceName + '/' + input.value
+      var link = spaceName + '/' + searchBoxInput.value
 
       goTo(link)
 
-      input.value = '';
+      searchBoxInput.value = '';
 
     })
 
@@ -356,6 +355,14 @@ function InterfaceModule(dataService, eventService) {
     searchBoxInput.addEventListener('keyup', function(event) {
 
        drawSearchboxAutocomplete(searchBoxAutocomplete, searchBoxInput)
+
+    })
+
+    searchBoxClearButton.addEventListener('click', function(){
+
+      searchBoxInput.value = '';
+      window.location.hash = '#/';
+
 
     })
 

@@ -36,6 +36,20 @@
     display: none;
 }
 
+.bg-color-corner {
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    background: aquamarine;
+    cursor: pointer;
+
+    display: none;
+
+}
+
 .delete-corner {
     position: absolute;
     right: 0;
@@ -97,6 +111,9 @@
     display: block;
 }
 
+.card:hover .bg-color-corner{
+    display: block;
+}
 
 .card .card-title {
 
@@ -108,6 +125,7 @@
     outline: none;
 
     font-weight: bold;
+    background: transparent;
 
 }
 
@@ -138,6 +156,7 @@
     outline: none;
     font-size: 14px;
     border: 0;
+    background: transparent;
 }
 
 .broken-link {
@@ -154,4 +173,8 @@
 
 .duplicate-card {
     border: 1px solid red;
+}
+
+.card-color-picker {
+    display: none;
 }

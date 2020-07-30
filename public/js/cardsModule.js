@@ -207,6 +207,7 @@ function CardsModule(dataService, eventService) {
 		      cardHtml = '<div class="card ' + active+  ' ' + emptyContent +'" ' + 
 		      'data-id="'+ card.id + '" '+
 		      'style="'+
+		      'background-color:' + card.style.backgroundColor + ';' +
 		      'left: ' + card.position.x + 'px;'+
 		      'top: ' + card.position.y + 'px;'+
 		      'width: ' + card.style.width + 'px;'+
@@ -219,7 +220,9 @@ function CardsModule(dataService, eventService) {
 		      cardHtml = cardHtml + '<div class="draggable-corner" title="Переместить"></div>';
 		      cardHtml = cardHtml + '<div class="delete-corner" title="Удалить"></div>';
 		      cardHtml = cardHtml + '<div class="resize-corner" title="Растянуть"></div>';
-		      cardHtml = cardHtml + '<div class="edit-corner" title="Редактировать"></div>';
+		      cardHtml = cardHtml + '<label for="color-picker-' + card.id +'" class="bg-color-corner" title="Редактировать"></label>';
+
+		      cardHtml = cardHtml + '<input type="color" id="color-picker-'+card.id+'" class="card-color-picker" value="'+card.style.backgroundColor+'">'
 
 		      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
 		      cardHtml = cardHtml + '<div class="card-text-compiled">' + card.text_compiled + '</div>';
@@ -276,9 +279,11 @@ function CardsModule(dataService, eventService) {
 
 	  cardElem.addEventListener('mousedown', function(event){
 
-	    // console.log('card mousedown event', event);
+	    console.log('card mousedown event', event);
 
-	    if (event.target.classList.contains('draggable-corner')) {
+	    if (event.target.classList.contains('draggable-corner') ||
+	   		event.target.classList.contains('card-text-compiled') ||
+	    	event.target.classList.contains('card-content')) {
 
 	      startX = event.clientX;
 	      startY = event.clientY;
@@ -532,7 +537,7 @@ function CardsModule(dataService, eventService) {
 	  var cardId = elem.dataset.id
 	  var card = dataService.getCardById(cardId);
 
-	  elem.querySelector('.edit-corner').addEventListener('click', function(event) {
+	  elem.addEventListener('dblclick', function(event) {
 
 	  	console.log('click compiled text event', event)
 
@@ -549,6 +554,28 @@ function CardsModule(dataService, eventService) {
 
 	}
 
+	function setCardBgColorChangeListener(elem) {
+
+	  var cardId = elem.dataset.id
+	  var card = dataService.getCardById(cardId);
+
+	  elem.querySelector('.card-color-picker').addEventListener('change', function(event) {
+
+	  	console.log('click compiled text event', event)
+
+	  	console.log('this.value', this.value)
+
+	  	card.style.backgroundColor = this.value;
+
+		elem.style.backgroundColor = this.value;
+
+		dataService.setCardById(cardId, card);
+	  	
+	  })
+
+	}
+
+
 	function setCardsEventListeners(spaceElem){
 
 	  var elements = spaceElem.querySelectorAll('.card');
@@ -562,6 +589,7 @@ function CardsModule(dataService, eventService) {
 	    setCardResizeListener(elem);
 	    setCardEditClickListener(elem);
 	    setCardTextareaBlurListener(elem);
+	    setCardBgColorChangeListener(elem);
 
 	  })
 
