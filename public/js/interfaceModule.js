@@ -216,10 +216,25 @@ function InterfaceModule(dataService, eventService) {
     var matches = [];
     var limit = 5;
 
+    var cardsWeight = {};
+
+    var userInputLowerCase;
+    var userInputWords;
+
     // console.log('userInput', userInput);
 
     if (userInput) {
-      for (i =0; i < spacesLength; i = i + 1) {
+
+      userInputLowerCase = userInput.toLowerCase();
+      userInputWords = userInputLowerCase.split(' ');
+      userInputWords = userInputWords.filter(function(word){
+        return word != '';
+      })
+
+
+      console.log('userInputWords', userInputWords);
+
+      for (i = 0; i < spacesLength; i = i + 1) {
 
         space = spaces[i];
 
@@ -229,22 +244,54 @@ function InterfaceModule(dataService, eventService) {
 
           card = space.cards[x];
 
+          cardsWeight[card.id] = {
+            weight: 0,
+            space: space,
+            card: card
+          }
 
-          if (card.title.toLowerCase().indexOf(userInput.toLowerCase()) !== -1) {
+          // strict search
 
-            matches.push({
+          if (card.title.toLowerCase().indexOf(userInputLowerCase) !== -1) {
 
-              space: space,
-              card: card
+            cardsWeight[card.id].weight = -1;
 
-            });
+          } 
+
+          if (card.text.toLowerCase().indexOf(userInputLowerCase) !== -1) {
+
+            cardsWeight[card.id].weight = -1;
+
+          }
+
+
+          // strict search ends
+
+          if (cardsWeight[card.id].weight >= 0 ) {
+
+            for (var t = 0; t < userInputWords.length; t = t + 1) {
+
+              userInputWord = userInputWords[t]
+
+              if (card.title.toLowerCase().indexOf(userInputWord) !== -1) {
+
+                cardsWeight[card.id].weight = cardsWeight[card.id].weight + 1;
+
+              } 
+
+              if (card.text.toLowerCase().indexOf(userInputWord) !== -1) {
+
+                cardsWeight[card.id].weight = cardsWeight[card.id].weight + 1;
+
+              }
+
+            }
 
           }
 
           if (matches.length >= limit) {
             break;
           }
-
 
         }
 
@@ -256,6 +303,55 @@ function InterfaceModule(dataService, eventService) {
     }
 
     // console.log('matches', matches);
+
+    var cardsWeightList = [];
+
+    Object.keys(cardsWeight).forEach(function(cardId) {
+
+        cardsWeightList.push(cardsWeight[cardId]);
+
+    });
+
+    cardsWeightList.forEach(function(cardWeight){
+
+      if(cardWeight.weight == -1) {
+
+        if (matches.length < 5) {
+          matches.push({
+              space: cardWeight.space,
+              card: cardWeight.card,
+              type: 'strict'
+          })
+
+        }
+      }
+
+    })
+
+    cardsWeightList = cardsWeightList.filter(function(item){return item.weight > 0})
+
+    cardsWeightList = cardsWeightList.sort(function(a,b){
+      return a.weight > b.weight;
+    })
+
+    console.log("Weight list ", cardsWeightList);
+
+    cardsWeightList.forEach(function(cardWeight) {
+
+      if (matches.length < 5) {
+
+        matches.push({
+            space: cardWeight.space,
+            card: cardWeight.card,
+            type: 'weight'
+        })
+
+      }
+
+    })
+
+    console.log('matches', matches);
+
 
     if (matches.length) {
 
@@ -271,16 +367,21 @@ function InterfaceModule(dataService, eventService) {
 
       space = matches[i].space;
       card = matches[i].card;
+      type = matches[i].type;
+
+      if (userInputWords.length == 1) {
+        type = 'weight';
+      }
 
       if (activeSpace.name == space.name) {
 
-        rowHtml = '<a class="search-box-option" href="map.html#/goto=' + card.title + '">';
+        rowHtml = '<a class="search-box-option option-type-'+type+'" href="map.html#/goto=' + card.title + '">';
 
         rowHtml = rowHtml + card.title;
 
       } else {
 
-        rowHtml = '<a class="search-box-option" href="map.html#/goto=' + space.name + '/' + card.title + '">';
+        rowHtml = '<a class="search-box-option option-type-'+type+'" href="map.html#/goto=' + space.name + '/' + card.title + '">';
 
         rowHtml = rowHtml + '<span class="search-box-space-name">' + space.name +'</span> / ' + card.title;
 

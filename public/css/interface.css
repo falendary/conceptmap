@@ -269,3 +269,7 @@ a.search-box-option:hover {
 .search-box-clear-button:hover {
     background: #ddd;
 }
+
+.search-box-option.option-type-strict {
+    background: khaki;
+}
