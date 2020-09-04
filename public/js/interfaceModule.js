@@ -100,15 +100,15 @@ function InterfaceModule(dataService, eventService) {
     var buttons = document.querySelectorAll('.space-button');
     var spaces = dataService.getSpaces();
 
+
+
     for( var i = 0; i < buttons.length; i = i + 1) {
 
       var button = buttons[i];
 
       button.addEventListener('click', function(event){
 
-        var index = this.dataset.index
-
-        console.log("Change space index", index);
+        var index = this.dataset.index;
 
         spaces.forEach(function(space){
           space.active = false;
@@ -138,6 +138,41 @@ function InterfaceModule(dataService, eventService) {
 
       })
 
+      button.querySelector('.space-button-delete-space-button').addEventListener('click', function(event){
+
+        console.log('click here?', {el: this})
+
+
+        var index = this.parentElement.dataset.index;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        space = spaces[button.dataset.index] 
+
+        response = prompt("Вы уверены что хотите удалить пространство? Напишите имя пространства для удаления");
+
+        console.log('response', response);
+        console.log('space.name', space.name);
+
+        if (response == space.name) {
+
+            spaces.splice(index, 1);
+
+            dataService.setSpaces(spaces);
+
+            toastr.info('Пространоство удалено')
+
+            eventService.dispatchEvent(EVENTS.RENDER_SPACES_TABS);
+
+        } else {
+
+          toastr.error('Пространоство не удалено')
+
+        }
+
+      })
+
     }
 
   }
@@ -158,6 +193,7 @@ function InterfaceModule(dataService, eventService) {
 
       var spaceHtml = '<div data-index="' + index + '" class="space-button ' + isActive + ' ">';
 
+      spaceHtml = spaceHtml + '<div class="space-button-delete-space-button">x</div>';
       spaceHtml = spaceHtml + space.name;
 
       spaceHtml = spaceHtml + "</div>";
@@ -169,6 +205,8 @@ function InterfaceModule(dataService, eventService) {
     spacesContainerElem.innerHTML = resultHtml;
 
     handleSpaceTabs()
+
+
 
   }
 
@@ -652,6 +690,16 @@ function InterfaceModule(dataService, eventService) {
 
     })
 
+    document.querySelector('.space-name-input').addEventListener('keyup', function(){
+
+      if (document.querySelector('.space-name-input').value) {
+        document.querySelector('.add-space-button').disabled = false;
+      } else {
+        document.querySelector('.add-space-button').disabled = true;
+      }
+
+    })
+
     document.querySelector('.add-space-button').addEventListener('click', function(event){
 
       var spaceName = document.querySelector('.space-name-input').value;
@@ -689,6 +737,7 @@ function InterfaceModule(dataService, eventService) {
       dataService.setActiveSpaceElem(activeSpaceElem)
 
     })
+
 
     window.addEventListener('beforeunload', (event) => {
        

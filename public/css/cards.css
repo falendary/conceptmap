@@ -178,3 +178,17 @@
 .card-color-picker {
     display: none;
 }
+
+.card-color-picker-select {
+    display: none;
+}
+
+.card-color-picker-select.active {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    z-index: 20;
+}

@@ -273,3 +273,29 @@ a.search-box-option:hover {
 .search-box-option.option-type-strict {
     background: khaki;
 }
+
+.space-button-delete-space-button {
+    display: none;
+}
+
+.space-button {
+    position: relative;
+}
+.space-button:hover .space-button-delete-space-button {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 10px;
+    width: 12px;
+    height: 12px;
+    text-align: center;
+}
+
+.space-button.active:hover .space-button-delete-space-button {
+    display: none;
+}
+
+.space-button:hover .space-button-delete-space-button:hover {
+    background: red;
+}

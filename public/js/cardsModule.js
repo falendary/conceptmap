@@ -177,6 +177,24 @@ function CardsModule(dataService, eventService) {
 
 	}
 
+	function renderColorPicker(card){
+
+		var result = '';
+
+		// result = result + '<input type="color" id="color-picker-'+card.id+'" class="card-color-picker" value="'+card.style.backgroundColor+'">'
+
+		result = result + '<select class="card-color-picker-select" id="color-picker-'+card.id+'" value="'+card.style.backgroundColor+'">';
+
+		result = result + '<option value="">Ничего</option>'
+		result = result + '<option value="#BEFABE">Зеленый</option>'
+		result = result + '<option value="#FFF3A6">Желтый</option>'
+		result = result + '<option value="#FFD6D6">Красный</option>'
+		result = result + '</select>'
+
+		return result;
+
+	}
+
 	function renderCards(){
 
 		var activeSpace = dataService.getActiveSpace();
@@ -220,9 +238,9 @@ function CardsModule(dataService, eventService) {
 		      cardHtml = cardHtml + '<div class="draggable-corner" title="Переместить"></div>';
 		      cardHtml = cardHtml + '<div class="delete-corner" title="Удалить"></div>';
 		      cardHtml = cardHtml + '<div class="resize-corner" title="Растянуть"></div>';
-		      cardHtml = cardHtml + '<label for="color-picker-' + card.id +'" class="bg-color-corner" title="Редактировать"></label>';
+		      cardHtml = cardHtml + '<div class="bg-color-corner" title="Сменить Фон"></div>';
 
-		      cardHtml = cardHtml + '<input type="color" id="color-picker-'+card.id+'" class="card-color-picker" value="'+card.style.backgroundColor+'">'
+		      cardHtml = cardHtml + renderColorPicker(card);
 
 		      cardHtml = cardHtml + '<input class="card-title" type="text" value="' + card.title + '">';
 		      cardHtml = cardHtml + '<div class="card-text-compiled">' + card.text_compiled + '</div>';
@@ -554,12 +572,34 @@ function CardsModule(dataService, eventService) {
 
 	}
 
+	function setCardBgColorClickListener(elem) {
+
+	  var cardId = elem.dataset.id
+	  var card = dataService.getCardById(cardId);
+
+	  elem.addEventListener('click', function(event) {
+
+	  	if (event.target.classList.contains('bg-color-corner')){
+
+	  		console.log("clicked on bg color editor?")
+
+	  		elem.querySelector('.card-color-picker-select').classList.add('active')
+	  		elem.querySelector('.card-color-picker-select').click();
+
+	  	}
+
+	  })
+
+	}
+
 	function setCardBgColorChangeListener(elem) {
 
 	  var cardId = elem.dataset.id
 	  var card = dataService.getCardById(cardId);
 
-	  elem.querySelector('.card-color-picker').addEventListener('change', function(event) {
+	  var select = elem.querySelector('.card-color-picker-select')
+
+	  select.addEventListener('change', function(event) {
 
 	  	console.log('click compiled text event', event)
 
@@ -568,6 +608,8 @@ function CardsModule(dataService, eventService) {
 	  	card.style.backgroundColor = this.value;
 
 		elem.style.backgroundColor = this.value;
+
+		select.classList.remove('active');
 
 		dataService.setCardById(cardId, card);
 	  	
@@ -588,6 +630,7 @@ function CardsModule(dataService, eventService) {
 	    setCardTextChangeListener(elem);
 	    setCardResizeListener(elem);
 	    setCardEditClickListener(elem);
+	    setCardBgColorClickListener(elem);
 	    setCardTextareaBlurListener(elem);
 	    setCardBgColorChangeListener(elem);
 
